@@ -1,21 +1,8 @@
 import json
 import requests
 import time
-import subprocess
-import tempfile
 from pathlib import Path
-
-def defuddle_content(html):
-    if not html: return \"\"
-    try:
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as tf:
-            tf.write(html)
-            tf_path = tf.name
-        result = subprocess.run(['defuddle', 'parse', tf_path, '--markdown'], capture_output=True, text=True, check=True)
-        Path(tf_path).unlink()
-        return result.stdout.strip()
-    except Exception:
-        return html
+from markdownify import markdownify as md
 
 def fetch_chunk(topic_id, ids):
     ids_str = '&post_ids[]='.join(map(str, ids))
@@ -48,7 +35,7 @@ def main():
                 'board': 'Level1Techs Discussion',
                 'topic': data.get('title'),
                 'post_id': post.get('id'),
-                'content_markdown': defuddle_content(post.get('cooked')),
+                'content_markdown': md(post.get('cooked', \"\"), strip=['img', 'video']).strip(),
                 'trust_level': post.get('trust_level'),
                 'reply_to_post_number': post.get('reply_to_post_number')
             })
@@ -56,7 +43,7 @@ def main():
     primitive['data']['mappings'].extend(new_mappings)
     primitive['data']['mappings'].sort(key=lambda x: x['post_number'])
     primitive['timestamp'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
-    primitive['version'] = '1.2.0'
+    primitive['version'] = '1.3.0'
     with open(file_path, 'w') as f: json.dump(primitive, f, indent=2)
 
 if __name__ == '__main__': main()
