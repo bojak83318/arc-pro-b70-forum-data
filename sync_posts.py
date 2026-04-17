@@ -24,11 +24,9 @@ def main():
 
     existing_ids = {m['post_id'] for m in primitive['data']['mappings']}
     
-    # Fetch latest stream
     print(f"Checking for new posts in topic {topic_id}...")
     r = requests.get(f'https://forum.level1techs.com/t/{topic_id}.json')
     if r.status_code != 200:
-        print(f"Failed to fetch topic metadata: {r.status_code}")
         return
 
     data = r.json()
@@ -39,7 +37,7 @@ def main():
         print("No new posts found.")
         return
 
-    print(f"Found {len(new_ids)} new posts. Fetching details...")
+    print(f"Found {len(new_ids)} new posts. Fetching enriched details...")
     new_mappings = []
     for i in range(0, len(new_ids), 20):
         chunk = new_ids[i:i+20]
@@ -51,19 +49,22 @@ def main():
                 'created_at': post.get('created_at'),
                 'board': 'Level1Techs Discussion',
                 'topic': data.get('title'),
-                'post_id': post.get('id')
+                'post_id': post.get('id'),
+                'content': post.get('cooked'),
+                'trust_level': post.get('trust_level'),
+                'reply_to_post_number': post.get('reply_to_post_number')
             })
         time.sleep(1)
 
-    # Append and sort
     primitive['data']['mappings'].extend(new_mappings)
     primitive['data']['mappings'].sort(key=lambda x: x['post_number'])
     primitive['timestamp'] = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+    primitive['version'] = '1.1.0'
     
     with open(file_path, 'w') as f:
         json.dump(primitive, f, indent=2)
     
-    print(f"✓ Added {len(new_mappings)} new posts. Total: {len(primitive['data']['mappings'])}")
+    print(f"✓ Added {len(new_mappings)} enriched posts. Total: {len(primitive['data']['mappings'])}")
 
 if __name__ == '__main__':
     main()
