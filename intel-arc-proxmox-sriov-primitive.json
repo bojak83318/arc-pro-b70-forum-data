@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-04-17T23:03:06Z",
+  "timestamp": "2026-04-19T02:46:15Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -5958,6 +5958,72 @@
         "content_markdown": "Thank you for the info! I had only tried 2GB of VRAM with the host / LXC via vramfs so I\u2019ll give allocating 4GB a shot.\n\nI\u2019ll also look into the DP dummy plug in case I decide to go back to 6979.",
         "trust_level": 1,
         "reply_to_post_number": 552
+      },
+      {
+        "username": "jode",
+        "post_number": 555,
+        "created_at": "2026-04-18T14:29:10.228Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072285,
+        "content_markdown": "wendell:\n\n> `LnkCap: Port #0, Speed 2.5GT/s, Width x1,`\n\n\n\nRamalama:\n\n> And this stupid bug with x1 Lane @2,5gb speed is another deal breaker to me.\n\nSo, I tried but am not able to run two VMs accelerated in parallel (VMs will start successfully, but the second one will slow down to a crawl - certainly no hw acceleration).\n\nMaybe a red herring, but I keep thinking that a single PCI lane to serve two different VMs may be the bottleneck here.  \nI tried all pro drivers starting with version 6979 (Q3 2025). Both in Linux and in Windows the max capabilities are reported as single lane PCIe.\n\nQuestions:\n\n* Does anyone here successfully accelerate multiple VMs in parallel (there are tons of discussions here about the 12 SR-IOV vs. 2 SR-IOV instances limit, but I don\u2019t win if I cannot use more than 1 practically)\n* Has anyone successfully been able to observe the Intel advertised bandwidth resembling a 8-lane electrical PCIe connection?",
+        "trust_level": 2,
+        "reply_to_post_number": 301
+      },
+      {
+        "username": "krasovsky",
+        "post_number": 556,
+        "created_at": "2026-04-18T21:43:37.460Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072401,
+        "content_markdown": "PCIe x1 is just a display bug, Intel explicitly mentions it in their documentation and says it\u2019s normal.",
+        "trust_level": 2,
+        "reply_to_post_number": 555
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 557,
+        "created_at": "2026-04-18T23:52:37.307Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072426,
+        "content_markdown": "You can refer to my previous post:\n\nmal7hael:\n\n> [20260417-1349521677\u00d7661 298 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/e/d/8/ed866fef0a8ef489b26115034d10e8370ac934c4.png \"20260417-134952\")\n\nThe x1 is just a display bug; you can use nvtop to check the actual bandwidth.\n\nCurrently, all three VMs can run games simultaneously, and the host machine can also perform transcoding at the same time.\n\nI did split the PCIe slots into x8x8, but I\u2019m not sure if that helps the graphics card.",
+        "trust_level": 0,
+        "reply_to_post_number": 555
+      },
+      {
+        "username": "OffGrid0000",
+        "post_number": 558,
+        "created_at": "2026-04-18T23:56:50.421Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072427,
+        "content_markdown": "The PCIe x1 thing is just a reporting bug with Arc GPUs, [they have some weird internal PCIe links](https://gitlab.freedesktop.org/drm/i915/kernel/-/work_items/10753#note_3221898) thing that causes issues with the reporting but there\u2019s a few ways to check the actual link speed mentioned in that thread.\n\nIs ASPM enabled on your B50? In my case, I had a bunch of issues with the VFs on every board I tried to use it with until I disabled it.  \n-My MSI B860, ASUS Z890, and ASUS W880 boards all had the B50s VFs being slower than the iGPUs VFs, programs using GPU crashing constantly, slow encoding, and being basically unusable when using more than one VF.  \n-My ASRock X570 boards had either the VF dropping off VM PCIe bus almost immediately or the whole GPU dropping off host PCIe bus when the VM started.",
+        "trust_level": 1,
+        "reply_to_post_number": 555
+      },
+      {
+        "username": "quilt",
+        "post_number": 559,
+        "created_at": "2026-04-19T00:20:18.709Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072434,
+        "content_markdown": "mal7hael:\n\n> I did split the PCIe slots into x8x8, but I\u2019m not sure if that helps the graphics card.\n\nDoesn\u2019t matter, the B50 is an x8 card.",
+        "trust_level": 2,
+        "reply_to_post_number": 557
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 560,
+        "created_at": "2026-04-19T00:33:02.663Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072439,
+        "content_markdown": "Some people say that using x16 can cause problems with the B50, and that the problems disappear after switching to x8.",
+        "trust_level": 0,
+        "reply_to_post_number": 559
       }
     ]
   }
