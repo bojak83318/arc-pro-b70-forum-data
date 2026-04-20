@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-04-19T02:46:15Z",
+  "timestamp": "2026-04-20T02:47:50Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6024,6 +6024,61 @@
         "content_markdown": "Some people say that using x16 can cause problems with the B50, and that the problems disappear after switching to x8.",
         "trust_level": 0,
         "reply_to_post_number": 559
+      },
+      {
+        "username": "just_anon",
+        "post_number": 561,
+        "created_at": "2026-04-19T10:45:46.868Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072506,
+        "content_markdown": "Did anybody noticed some strange performance fluctuation when using VF\u2019s ?  \nI have a B60 on z890 mobo, SR-IOV work fine, I can create 7VF\u2019s, in Win 11 25H2 pro driver 32.0.101.8515 installs cleanly, same for the latest non-pro, windows reports the device as working without code 43.\n\nHowever, when I try to benchmark it with Furmark I can observer a very strange behavior where initially I get around 60 FPS ( *which is expected number matching what I got with full PCIe passthrough* ) then over the period of about 10-15 seconds it degrades to 8 FPS and kinda moves up and down from 8 to 40/50, for some reason it seems more stable when running the test at 4K than 1080p. For comparison, VF from Core Ultra 7 270k can do stable 20 FPS. Has anybody observed similar behavior ?\n\nFor context, the machine is running Proxmox 9 with 6.17.13-2-pve kernel, VF properly binds vfio-pci when in use, dmesg is clean, I am only using one VF at a time so it should have access to the entire GPU computing power. This does not seem to be some reporting issue because the GPU temps stay too low for a stress test, when running test at 4K it can reach up to 58 degrees but it\u2019s still too low, at least I remember it getting hotter with PCIe passthrough. No issues were observed with full PCIe passthrough.\n\nOne more thing I would like to ask is, if it\u2019s normal for the VF to see only a part of the card\u2019s VRAM ? when I enable 7 VFs on B60 the windows VM only sees 3,5 GB of VRAM, I may be completely wrong here but I thought that with SR-IOV each VF should have access to all of GPUs resources if other VF\u2019s don\u2019t request them at the same time.",
+        "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "jode",
+        "post_number": 562,
+        "created_at": "2026-04-19T12:45:15.513Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072519,
+        "content_markdown": "OffGrid0000:\n\n> there\u2019s a few ways to check the actual link speed mentioned in that thread.\n\n\n\nConfirmed\n\nroot@pve2:~# udevadm info -a /sys/class/drm/card1/device/|grep \u201clooking|DRIVER|*link*|subsystem\\_\u201d  \nlooking at device \u2018/devices/pci0000:00/0000:00:03.0/0000:03:00.0/0000:04:08.0/0000:07:00.0/0000:08:01.0/0000:09:00.0\u2019:  \nDRIVER==\u201cxe\u201d  \nATTR{auto\\_link\\_downgrade\\_capable}==\u201c0\u201d  \nATTR{auto\\_link\\_downgrade\\_status}==\u201c0\u201d  \nATTR{current\\_link\\_speed}==\u201c2.5 GT/s PCIe\u201d  \nATTR{current\\_link\\_width}==\u201c1\u201d  \nATTR{max\\_link\\_speed}==\u201c2.5 GT/s PCIe\u201d  \nATTR{max\\_link\\_width}==\u201c1\u201d  \nATTR{subsystem\\_device}==\u201c0x1114\u201d  \nATTR{subsystem\\_vendor}==\u201c0x8086\u201d  \nlooking at parent device \u2018/devices/pci0000:00/0000:00:03.0/0000:03:00.0/0000:04:08.0/0000:07:00.0/0000:08:01.0\u2019:  \nDRIVERS==\u201cpcieport\u201d  \nATTRS{current\\_link\\_speed}==\u201c2.5 GT/s PCIe\u201d  \nATTRS{current\\_link\\_width}==\u201c1\u201d  \nATTRS{max\\_link\\_speed}==\u201c2.5 GT/s PCIe\u201d  \nATTRS{max\\_link\\_width}==\u201c1\u201d  \nATTRS{subsystem\\_device}==\u201c0x0000\u201d  \nATTRS{subsystem\\_vendor}==\u201c0x8086\u201d  \nlooking at parent device \u2018/devices/pci0000:00/0000:00:03.0/0000:03:00.0/0000:04:08.0/0000:07:00.0\u2019:  \nDRIVERS==\u201cpcieport\u201d  \nATTRS{current\\_link\\_speed}==\u201c8.0 GT/s PCIe\u201d  \nATTRS{current\\_link\\_width}==\u201c8\u201d  \nATTRS{max\\_link\\_speed}==\u201c32.0 GT/s PCIe\u201d  \nATTRS{max\\_link\\_width}==\u201c8\u201d  \nATTRS{subsystem\\_device}==\u201c0x0000\u201d  \nATTRS{subsystem\\_vendor}==\u201c0x0000\u201d  \nlooking at parent device \u2018/devices/pci0000:00/0000:00:03.0/0000:03:00.0/0000:04:08.0\u2019:  \nDRIVERS==\u201cpcieport\u201d  \nATTRS{current\\_link\\_speed}==\u201c8.0 GT/s PCIe\u201d  \nATTRS{current\\_link\\_width}==\u201c8\u201d  \nATTRS{max\\_link\\_speed}==\u201c8.0 GT/s PCIe\u201d  \nATTRS{max\\_link\\_width}==\u201c8\u201d  \nATTRS{subsystem\\_device}==\u201c0x8747\u201d  \nATTRS{subsystem\\_vendor}==\u201c0x10b5\u201d  \nlooking at parent device \u2018/devices/pci0000:00/0000:00:03.0/0000:03:00.0\u2019:  \nDRIVERS==\u201cpcieport\u201d  \nATTRS{current\\_link\\_speed}==\u201c8.0 GT/s PCIe\u201d  \nATTRS{current\\_link\\_width}==\u201c16\u201d  \nATTRS{max\\_link\\_speed}==\u201c8.0 GT/s PCIe\u201d  \nATTRS{max\\_link\\_width}==\u201c16\u201d  \nATTRS{subsystem\\_device}==\u201c0x8747\u201d  \nATTRS{subsystem\\_vendor}==\u201c0x10b5\u201d  \nlooking at parent device \u2018/devices/pci0000:00/0000:00:03.0\u2019:  \nDRIVERS==\u201cpcieport\u201d  \nATTRS{current\\_link\\_speed}==\u201c8.0 GT/s PCIe\u201d  \nATTRS{current\\_link\\_width}==\u201c16\u201d  \nATTRS{max\\_link\\_speed}==\u201c8.0 GT/s PCIe\u201d  \nATTRS{max\\_link\\_width}==\u201c16\u201d  \nATTRS{subsystem\\_device}==\u201c0x0000\u201d  \nATTRS{subsystem\\_vendor}==\u201c0x8086\u201d  \nlooking at parent device \u2018/devices/pci0000:00\u2019:  \nDRIVERS==\u201c\u201d",
+        "trust_level": 2,
+        "reply_to_post_number": 558
+      },
+      {
+        "username": "Virtual_Law",
+        "post_number": 563,
+        "created_at": "2026-04-19T12:52:51.205Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072521,
+        "content_markdown": "TLDR,\n\nhas this made any major progress since the first post?  \nSpecifically that Heaven benchmark",
+        "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "just_anon",
+        "post_number": 564,
+        "created_at": "2026-04-19T13:41:10.145Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072525,
+        "content_markdown": "After setting up [Apollo](https://github.com/ClassicOldSong/Apollo) and changing network adapter type in Proxmox to Intel E1000 I can confirm that the \u201cfluctuating\u201d FPS was due to RDP, with proper remote desktop it\u2019s 53 FPS at 4k and the temps on GPU are as I would expect them to be, so all good, the VRAM thing is still bothering me though",
+        "trust_level": 2,
+        "reply_to_post_number": 561
+      },
+      {
+        "username": "Odyssey",
+        "post_number": 565,
+        "created_at": "2026-04-20T01:15:50.684Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072640,
+        "content_markdown": "So increasing the VRAM to 4GB via vramfs did improve things, I can consistently get my Plex LXC working, it doesn\u2019t crash after a single transcode anymore.\n\nHowever, if the B50 is doing hardware transcoding on the root device, and then I use hardware acceleration on one of the VF\u2019s (even just hardware accelerated RDP) it will crash the VM attempting to use the VF and then lock-up the Plex LXC.\n\nI\u2019ve installed a mini-DP dummy plug and reverted to 6979 with 3 VFs (1x LXC + 2x VM) for now, I will give it another go in the future, ie with the 7.0 kernel on Proxmox when it\u2019s released.\n\nOne last thing I\u2019ll mention is I did not see the behavior you did concerning the VRAM allocation, when I reserved 4GB for root the two VF\u2019s received 6GB each at creation.",
+        "trust_level": 1,
+        "reply_to_post_number": 552
       }
     ]
   }
