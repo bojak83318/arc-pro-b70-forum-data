@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-04-20T02:47:50Z",
+  "timestamp": "2026-04-21T02:40:39Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6079,6 +6079,72 @@
         "content_markdown": "So increasing the VRAM to 4GB via vramfs did improve things, I can consistently get my Plex LXC working, it doesn\u2019t crash after a single transcode anymore.\n\nHowever, if the B50 is doing hardware transcoding on the root device, and then I use hardware acceleration on one of the VF\u2019s (even just hardware accelerated RDP) it will crash the VM attempting to use the VF and then lock-up the Plex LXC.\n\nI\u2019ve installed a mini-DP dummy plug and reverted to 6979 with 3 VFs (1x LXC + 2x VM) for now, I will give it another go in the future, ie with the 7.0 kernel on Proxmox when it\u2019s released.\n\nOne last thing I\u2019ll mention is I did not see the behavior you did concerning the VRAM allocation, when I reserved 4GB for root the two VF\u2019s received 6GB each at creation.",
         "trust_level": 1,
         "reply_to_post_number": 552
+      },
+      {
+        "username": "krasovsky",
+        "post_number": 566,
+        "created_at": "2026-04-20T08:01:28.930Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072694,
+        "content_markdown": "Fun fact: Intel enabled SR-IOV for many integrated GPUs in Linux 7.0, and my 14900K now has 7 VFs. While a dedicated Arc Pro B50 has only 2",
+        "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 567,
+        "created_at": "2026-04-20T08:44:57.115Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072710,
+        "content_markdown": "I initially used kernel 6.17, and it seems I did encounter a similar crash issue to yours. It even crashes when just two VF instances are running game at the same time.\n\nHowever, I didn\u2019t investigate the problem thoroughly before updating the kernel; perhaps kernel 7.0 resolved the issue.\n\nCurrently, I can perform transcoding and 3D acceleration tasks simultaneously without encountering any significant performance problems.\n\n[20260420-1637081189\u00d71045 301 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/f/f/b/ffb2361664b067d6f4cf288752384ebb5956ef05.jpeg \"20260420-163708\")",
+        "trust_level": 0,
+        "reply_to_post_number": 565
+      },
+      {
+        "username": "krasovsky",
+        "post_number": 568,
+        "created_at": "2026-04-20T18:52:13.816Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072850,
+        "content_markdown": "(post deleted by author)",
+        "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "Odyssey",
+        "post_number": 569,
+        "created_at": "2026-04-20T20:33:03.787Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072875,
+        "content_markdown": "I can do transcoding on a VF passed to an LXC and 3d acceleration on VF\u2019s passed to VMs at the same time without any crashing, but I haven\u2019t done anything as intensive as 3d gaming, just more desktop acceleration over RDP and in apps on both Win11 LTSC and Ubuntu.\n\nI will definitely try out the 7.0 kernel when it\u2019s available for Proxmox and see if it changes anything. I\u2019m not having the same instability on driver/firmware 6979 this time likely due to the fact that I used DDU to cleanup the drivers before downgrading on the W11 VM, so at least that allows me to have VF\u2019s on two VMs in addition to the Plex LXC until / if they increase the # of VF\u2019s in a new firmware release.",
+        "trust_level": 1,
+        "reply_to_post_number": 567
+      },
+      {
+        "username": "quilt",
+        "post_number": 570,
+        "created_at": "2026-04-20T21:20:45.912Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072881,
+        "content_markdown": "Oh! Amazing, have you tried using them yet? My homeserver runs on a 12100, would love to have some VFs on there..",
+        "trust_level": 2,
+        "reply_to_post_number": 566
+      },
+      {
+        "username": "just_anon",
+        "post_number": 571,
+        "created_at": "2026-04-20T21:35:35.437Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4072884,
+        "content_markdown": "Just my 2 cents, I managed to successfully use several VF\u2019s simultaneously on i5 13500 and core ultra 270k on <7.0 kernels, both linux and windows guests, so I think that you should be able to use your 12100 with no problems.  \nThis [dkms](https://github.com/strongtz/i915-sriov-dkms) is required for alder lake to work, although 7.0 might change that, I have not tested my setup on it, waiting for it to get to main repo.",
+        "trust_level": 2,
+        "reply_to_post_number": 570
       }
     ]
   }
