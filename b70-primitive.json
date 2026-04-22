@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-04-21T02:40:38Z",
+  "timestamp": "2026-04-22T02:39:16Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1360,6 +1360,17 @@
         "content_markdown": "I saw that but hadn\u2019t had a chance to test, I saw you had done some benchmarks in their PR though!\n\nIs odd to me that the email on the GitHub account is a Gmail but looks like a nice amount of sycl develment lately in the llama.cpp repo.",
         "trust_level": 2,
         "reply_to_post_number": 127
+      },
+      {
+        "username": "ychto",
+        "post_number": 129,
+        "created_at": "2026-04-21T07:13:32.361Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4072937,
+        "content_markdown": "[Screenshot 2026-04-21 at 12.08.22 AM1920\u00d71241 282 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/a/4/1/a412ac740d851c6f6038d3513a914aa0f47c43b8.jpeg \"Screenshot 2026-04-21 at 12.08.22 AM\")\n\n  \nGot the B70 VFs working now. Big shoutout to Jeff@CraftComputing for helping me realize what the cause of my issues were. We both got weirdness with the Unigine system reporting but hey, it\u2019s working now. This is on the Intel reference B70 with the new 8724 gaming drivers, Windows 11 VM on a Proxmox host.",
+        "trust_level": 1,
+        "reply_to_post_number": null
       }
     ]
   }
