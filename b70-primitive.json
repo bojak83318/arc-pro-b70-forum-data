@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-04-22T02:39:16Z",
+  "timestamp": "2026-04-23T02:42:35Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1371,6 +1371,28 @@
         "content_markdown": "[Screenshot 2026-04-21 at 12.08.22 AM1920\u00d71241 282 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/a/4/1/a412ac740d851c6f6038d3513a914aa0f47c43b8.jpeg \"Screenshot 2026-04-21 at 12.08.22 AM\")\n\n  \nGot the B70 VFs working now. Big shoutout to Jeff@CraftComputing for helping me realize what the cause of my issues were. We both got weirdness with the Unigine system reporting but hey, it\u2019s working now. This is on the Intel reference B70 with the new 8724 gaming drivers, Windows 11 VM on a Proxmox host.",
         "trust_level": 1,
         "reply_to_post_number": null
+      },
+      {
+        "username": "eduncan911",
+        "post_number": 130,
+        "created_at": "2026-04-22T12:21:03.000Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4073177,
+        "content_markdown": "Echo9Zulu:\n\n> ./llama-bench -m Qwen3.5-35B-A3B-Q4\\_K\\_M.gguf  \n> b8665\n>\n> | model | size | params | backend | ngl | test | t/s |\n> | --- | --- | --- | --- | --- | --- | --- |\n> | qwen35moe 35B.A3B Q4\\_K - Medium | 20.49 GiB | 34.66 B | Vulkan | 99 | pp512 | 1344.37 \u00b1 5.22 |\n> | qwen35moe 35B.A3B Q4\\_K - Medium | 20.49 GiB | 34.66 B | Vulkan | 99 | tg128 | 44.12 \u00b1 0.02 |\n\nSo my 4 year old laptop (pre-ChatGPT release) with an RTX Quadro A5500 (aka undervolted/underclocked 3080 Ti - **but with 16GB VRAM**) runs this identical model.\n\nOn Q4\\_K, I see a solid 60tps however the 262k context window (-fit brings it down to 210k) tends to slow things down past 50k context fills to around 30tps. I also ran into a few edge cases in long coding sessions.\n\nSo I\u2019ve switched to the Q5\\_X\\_L UD variant of unsloth, with F16 ctk but Q8 ctv to fit, which brings the -fit context window down to 140k. Multi-hour long coding sessions stay coherit much much longer.\n\nI\u2019m only seeing 40-45tps @ 20k context tests - which matches this Intel B70 ?! Either my DDR5 dual channel system is performing way above expectations offloading up|down MoE layers, or this B70 is vastly underperforming?\n\n---\n\nI\u2019m on the fence to buying two R9700 or two B70s. I\u2019m leaning towards the R9700, however, VFIO is very attractive to me for long-term usability of the GPU. So trying to gauge exactly the performance of the B70 - and it seems on par with my non-Ai laptop? That doesn\u2019t seem right.\n\nUsing llama.cpp cuda backend.",
+        "trust_level": 2,
+        "reply_to_post_number": 71
+      },
+      {
+        "username": "digitalscream",
+        "post_number": 131,
+        "created_at": "2026-04-22T13:28:02.537Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4073192,
+        "content_markdown": "eduncan911:\n\n> I\u2019m on the fence to buying two R9700 or two B70s. I\u2019m leaning towards the R9700, however, VFIO is very attractive to me for long-term usability of the GPU. So trying to gauge exactly the performance of the B70 - and it seems on par with my non-Ai laptop? That doesn\u2019t seem right.\n>\n> Using llama.cpp cuda backend.\n\nWell, you say it\u2019s a \u201cnon-AI laptop\u201d, but it\u2019s basically a machine with a dedicated GPU - not remotely related to the current crop of AI machines with unified memory.\n\nStill\u2026the fact is that the B70 isn\u2019t really a particularly good prospect for LLM inference at the moment; the performance delta with the R9700 is measured in multiples rather than percent, which isn\u2019t good given the 10% difference in price. The B65 might be a better cost/performance ratio, but time will tell. There may be some advances in performance over the next few months with that Intel account contributing more to the llama.cpp project, but \u201cPay now for performance that may come in a few months\u201d isn\u2019t a purchasing strategy I\u2019d personally employ.\n\nBy comparison, Qwen3.5-35B-A3B-Q4\\_K\\_M runs around 3400t/s PP and 140-150t/s TG on a single R9700 without any optimisations using llama.cpp. Nowhere near 5090 performance, of course, but in the \u00a31.2k price bracket it\u2019s pretty much the only game in town (for now).\n\nDon\u2019t forget that we also have the R9600 coming soon - that may well take the \u201cbudget\u201d crown (deliberately in quotes, because my brain is still in the 2010s when a \u00a3400 GPU was pretty out there), with slightly less compute but the same VRAM capacity and bandwidth (I think).",
+        "trust_level": 2,
+        "reply_to_post_number": 130
       }
     ]
   }
