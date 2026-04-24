@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-04-23T02:42:35Z",
+  "timestamp": "2026-04-24T02:43:23Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1393,6 +1393,50 @@
         "content_markdown": "eduncan911:\n\n> I\u2019m on the fence to buying two R9700 or two B70s. I\u2019m leaning towards the R9700, however, VFIO is very attractive to me for long-term usability of the GPU. So trying to gauge exactly the performance of the B70 - and it seems on par with my non-Ai laptop? That doesn\u2019t seem right.\n>\n> Using llama.cpp cuda backend.\n\nWell, you say it\u2019s a \u201cnon-AI laptop\u201d, but it\u2019s basically a machine with a dedicated GPU - not remotely related to the current crop of AI machines with unified memory.\n\nStill\u2026the fact is that the B70 isn\u2019t really a particularly good prospect for LLM inference at the moment; the performance delta with the R9700 is measured in multiples rather than percent, which isn\u2019t good given the 10% difference in price. The B65 might be a better cost/performance ratio, but time will tell. There may be some advances in performance over the next few months with that Intel account contributing more to the llama.cpp project, but \u201cPay now for performance that may come in a few months\u201d isn\u2019t a purchasing strategy I\u2019d personally employ.\n\nBy comparison, Qwen3.5-35B-A3B-Q4\\_K\\_M runs around 3400t/s PP and 140-150t/s TG on a single R9700 without any optimisations using llama.cpp. Nowhere near 5090 performance, of course, but in the \u00a31.2k price bracket it\u2019s pretty much the only game in town (for now).\n\nDon\u2019t forget that we also have the R9600 coming soon - that may well take the \u201cbudget\u201d crown (deliberately in quotes, because my brain is still in the 2010s when a \u00a3400 GPU was pretty out there), with slightly less compute but the same VRAM capacity and bandwidth (I think).",
         "trust_level": 2,
         "reply_to_post_number": 130
+      },
+      {
+        "username": "tovida",
+        "post_number": 132,
+        "created_at": "2026-04-23T02:48:19.513Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4073305,
+        "content_markdown": "> Just sharing my results here after messing with my setup for a while.\n\nNvidia RTX 3090 vs Intel Arc Pro B70 llama.cpp benchmark\n========================================================\n\nThese results compare three `llama.cpp` execution paths on the same machine:\n\n* **RTX 3090 (Vulkan)** on NixOS host, using main llama.cpp repo (compiled on 4/21/2026)\n* **Arc Pro B70 (Vulkan)** on NixOS host, using main llama.cpp repo (compiled on 4/21/2026)\n* **Arc Pro B70 (SYCL)** inside an Ubuntu 24.04 Docker container, using a separate SYCL-enabled `llama-bench` build from the `aicss-genai/llama.cpp` fork\n\nPrompt processing (`pp512`)\n===========================\n\n| model | RTX 3090 (Vulkan) | Arc Pro B70 (Vulkan) | Arc Pro B70 (SYCL) | B70 best vs 3090 | B70 SYCL vs B70 Vulkan |\n| --- | --- | --- | --- | --- | --- |\n| TheBloke/Llama-2-7B-GGUF:Q4\\_K\\_M | 4550.27 \u00b1 10.90 | 1236.65 \u00b1 3.19 | 1178.54 \u00b1 5.74 | -72.8% | -4.7% |\n| unsloth/gemma-4-E2B-it-GGUF:Q4\\_K\\_XL | 9359.15 \u00b1 168.11 | 2302.80 \u00b1 5.26 | 3462.19 \u00b1 36.07 | -63.0% | +50.3% |\n| unsloth/gemma-4-26B-A4B-it-GGUF:Q4\\_K\\_M | 3902.28 \u00b1 21.37 | 1126.28 \u00b1 6.17 | 945.89 \u00b1 17.53 | -71.1% | -16.0% |\n| unsloth/gemma-4-31B-it-GGUF:Q4\\_K\\_XL | 991.47 \u00b1 1.73 | 295.66 \u00b1 0.60 | 268.50 \u00b1 0.65 | -70.2% | -9.2% |\n| ggml-org/Qwen2.5-Coder-7B-Q8\\_0-GGUF:Q8\\_0 | 4740.04 \u00b1 13.78 | 1176.34 \u00b1 1.68 | 1192.99 \u00b1 5.75 | -74.8% | +1.4% |\n| ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8\\_0-GGUF:Q8\\_0 | oom | 990.32 \u00b1 5.34 | 552.37 \u00b1 5.76 | \u221e | -44.2% |\n| Qwen/Qwen3-8B-GGUF:Q8\\_0 | 4195.89 \u00b1 41.31 | 1048.39 \u00b1 2.66 | 1098.90 \u00b1 1.02 | -73.8% | +4.8% |\n| unsloth/Qwen3.5-4B-GGUF:Q4\\_K\\_XL | 5233.55 \u00b1 8.29 | 1430.72 \u00b1 9.68 | 1767.21 \u00b1 21.27 | -66.2% | +23.5% |\n| unsloth/Qwen3.5-35B-A3B-GGUF:Q4\\_K\\_M | 3357.03 \u00b1 18.47 | 886.39 \u00b1 6.14 | 445.56 \u00b1 7.46 | -73.6% | -49.7% |\n| unsloth/Qwen3.6-35B-A3B-GGUF:Q4\\_K\\_M | 3417.76 \u00b1 17.84 | 878.15 \u00b1 5.32 | 442.01 \u00b1 6.51 | -74.3% | -49.7% |\n| **Average (excluding oom)** |  |  |  | **-71.1%** |  |\n\nToken generation (`tg128`)\n==========================\n\n| model | RTX 3090 (Vulkan) | Arc Pro B70 (Vulkan) | Arc Pro B70 (SYCL) | B70 best vs 3090 | B70 SYCL vs B70 Vulkan |\n| --- | --- | --- | --- | --- | --- |\n| TheBloke/Llama-2-7B-GGUF:Q4\\_K\\_M | 137.92 \u00b1 0.41 | 58.61 \u00b1 0.09 | 92.39 \u00b1 0.30 | -33.0% | +57.6% |\n| unsloth/gemma-4-E2B-it-GGUF:Q4\\_K\\_XL | 207.21 \u00b1 2.00 | 89.33 \u00b1 0.60 | 70.65 \u00b1 0.84 | -56.9% | -20.9% |\n| unsloth/gemma-4-26B-A4B-it-GGUF:Q4\\_K\\_M | 131.33 \u00b1 0.14 | 42.00 \u00b1 0.01 | 37.75 \u00b1 0.32 | -68.0% | -10.1% |\n| unsloth/gemma-4-31B-it-GGUF:Q4\\_K\\_XL | 31.49 \u00b1 0.05 | 14.49 \u00b1 0.04 | 18.30 \u00b1 0.05 | -41.9% | +26.3% |\n| ggml-org/Qwen2.5-Coder-7B-Q8\\_0-GGUF:Q8\\_0 | 98.96 \u00b1 0.56 | 21.30 \u00b1 0.03 | 55.37 \u00b1 0.02 | -44.1% | +160.0% |\n| ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8\\_0-GGUF:Q8\\_0 | oom | 37.69 \u00b1 0.03 | 28.58 \u00b1 0.09 | \u221e | -24.2% |\n| Qwen/Qwen3-8B-GGUF:Q8\\_0 | 92.29 \u00b1 0.17 | 19.78 \u00b1 0.01 | 50.74 \u00b1 0.02 | -45.0% | +156.5% |\n| unsloth/Qwen3.5-4B-GGUF:Q4\\_K\\_XL | 162.58 \u00b1 0.76 | 60.45 \u00b1 0.06 | 79.09 \u00b1 0.05 | -51.4% | +30.8% |\n| unsloth/Qwen3.5-35B-A3B-GGUF:Q4\\_K\\_M | 148.01 \u00b1 0.38 | 43.30 \u00b1 0.05 | 37.93 \u00b1 0.89 | -70.7% | -12.4% |\n| unsloth/Qwen3.6-35B-A3B-GGUF:Q4\\_K\\_M | 148.64 \u00b1 0.53 | 43.46 \u00b1 0.02 | 36.87 \u00b1 0.42 | -70.8% | -15.2% |\n| **Average (excluding oom)** |  |  |  | **-53.5%** |  |\n\nCommands used\n-------------\n\n### Host Vulkan runs\n\nFor each model, the host benchmark commands were:\n\n```\nllama-bench -hf <MODEL> -dev Vulkan0\nllama-bench -hf <MODEL> -dev Vulkan2\n```\n\nWhere:\n\n* `Vulkan0` = **RTX 3090**\n* `Vulkan2` = **Arc Pro B70**\n\n### Container SYCL runs\n\nFor each model, the SYCL benchmark was run inside the Docker container with:\n\n```\n./build/bin/llama-bench -hf <MODEL> -dev SYCL0\n```\n\nWhere:\n\n* `SYCL0` = **Arc Pro B70**\n\nTest machine\n------------\n\n* **CPU**: AMD Ryzen Threadripper 2970WX 24-Core Processor\n\n  + 24 cores / 48 threads\n  + 1 socket\n  + 2.2 GHz min / 3.0 GHz max\n* **RAM**: 128 GiB total\n* **GPUs**:\n\n  + NVIDIA GeForce RTX 3090, 24 GiB\n  + NVIDIA GeForce RTX 3090, 24 GiB\n  + Intel Arc Pro B70, 32 GiB",
+        "trust_level": 0,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "tovida",
+        "post_number": 133,
+        "created_at": "2026-04-23T13:33:59.005Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4073397,
+        "content_markdown": "tovida:\n\n> **Arc Pro B70 (SYCL)** inside an Ubuntu 24.04 Docker container, using a separate SYCL-enabled `llama-bench` build from the `aicss-genai/llama.cpp` fork\n\nJust a quick note. Someone on Reddit pointed out that some of the models running this specific SYCL built (version: 8851 (e365e658f)) produce garbage when tested in practice with llama-cli. I did a few quick tests to confirm this\u2026\n\n**TheBloke/Llama-2-7B-GGUF:Q4\\_K\\_M** - is completely broken.\n\n**ggml-org/Qwen2.5-Coder-7B-Q8\\_0-GGUF:Q8\\_0** - sometimes works just fine, sometimes gets completely lost and goes in loops. It seems something related to the termination of the responses is failing. It can answer technical questions just fine most of the time, but a simple \u201cHi\u201d breaks it :D!\n\nThe rest, including **Qwen/Qwen3-8B-GGUF:Q8\\_0** seem to be working fine. All the reasoning models seem fine too.",
+        "trust_level": 0,
+        "reply_to_post_number": 132
+      },
+      {
+        "username": "ychto",
+        "post_number": 134,
+        "created_at": "2026-04-23T19:16:04.658Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4073482,
+        "content_markdown": "CraftComputing did a fantastic video on using the VFs for VDI/gaming and is worth watching:\n\nThere is a pinned comment in that video too, if you are going to use the VFs make sure you set your CPU model in Proxmox to \u201chost\u201d as the drivers don\u2019t seem to work with emulated CPU models.",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "Strawberry",
+        "post_number": 135,
+        "created_at": "2026-04-23T19:41:17.452Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4073487,
+        "content_markdown": "I wonder if it\u2019s that it requires AVX2. x86-64v2 doesn\u2019t support it but v3 does. I had to set v3 for my b50s to work correctly. It makes you think.",
+        "trust_level": 3,
+        "reply_to_post_number": 134
       }
     ]
   }
