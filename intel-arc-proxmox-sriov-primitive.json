@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-05-07T02:55:26Z",
+  "timestamp": "2026-05-08T02:57:33Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6266,6 +6266,17 @@
         "content_markdown": "The VF will show as xe driver loaded until you power-on a VM with the VF attached to it, then they will show as vfio-pci, assuming everything else is configured / functioning correctly.\n\nThis allows the VF to be utilized by the host / LXC\u2019s via the xe driver until it is first used by a VM.",
         "trust_level": 1,
         "reply_to_post_number": 581
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 583,
+        "created_at": "2026-05-08T01:54:09.231Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077149,
+        "content_markdown": "Under kernel 7.0, it appears that the amount of VRAM allocated to each VF can be modified individually.\n\nCurrently, firmware 6979 allows up to 12 VFs to be enabled.\n\n```\nroot@epyc:~# find /sys -name vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf12/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf11/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf10/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf9/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf8/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf7/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf6/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf5/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf4/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf2/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf1/tile0/vram_quota\n```\n\nBy default, when a VF is created, the available VRAM is evenly distributed.\n\nI enabled 3 VFs, each allocated 4.5GB of VRAM. The remaining 2.5GB is reserved for PF.\n\n```\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf1/tile0/vram_quota\n4584374272\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf2/tile0/vram_quota\n4584374272\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\n4584374272\n```\n\nChange the **VF3**\u2019s VRAM size to **2GB**.\n\n```\nroot@epyc:~# echo 2147483648 > /sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\n2147483648\n```\n\nAfter starting the VMs, you can see that the VRAM of one VM has changed to **2GB**, while the others remain unchanged at **4.5GB**.\n\n[20260508-0932132728\u00d7891 395 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/0/7/b/07b4a93eac2d941bae9797fee4e139f6b10a84c6.png \"20260508-093213\")\n\nI ran a few simple tests, and it seems to be working fine.\n\nI\u2019ll let it run for a few days and see if there are any problems.",
+        "trust_level": 1,
+        "reply_to_post_number": null
       }
     ]
   }
