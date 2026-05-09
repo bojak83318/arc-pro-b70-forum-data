@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-05-08T02:57:33Z",
+  "timestamp": "2026-05-09T02:53:27Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6277,6 +6277,116 @@
         "content_markdown": "Under kernel 7.0, it appears that the amount of VRAM allocated to each VF can be modified individually.\n\nCurrently, firmware 6979 allows up to 12 VFs to be enabled.\n\n```\nroot@epyc:~# find /sys -name vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf12/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf11/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf10/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf9/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf8/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf7/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf6/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf5/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf4/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf2/tile0/vram_quota\n/sys/kernel/debug/dri/0000:23:00.0/sriov/vf1/tile0/vram_quota\n```\n\nBy default, when a VF is created, the available VRAM is evenly distributed.\n\nI enabled 3 VFs, each allocated 4.5GB of VRAM. The remaining 2.5GB is reserved for PF.\n\n```\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf1/tile0/vram_quota\n4584374272\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf2/tile0/vram_quota\n4584374272\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\n4584374272\n```\n\nChange the **VF3**\u2019s VRAM size to **2GB**.\n\n```\nroot@epyc:~# echo 2147483648 > /sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\nroot@epyc:~# cat /sys/kernel/debug/dri/0000:23:00.0/sriov/vf3/tile0/vram_quota\n2147483648\n```\n\nAfter starting the VMs, you can see that the VRAM of one VM has changed to **2GB**, while the others remain unchanged at **4.5GB**.\n\n[20260508-0932132728\u00d7891 395 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/0/7/b/07b4a93eac2d941bae9797fee4e139f6b10a84c6.png \"20260508-093213\")\n\nI ran a few simple tests, and it seems to be working fine.\n\nI\u2019ll let it run for a few days and see if there are any problems.",
         "trust_level": 1,
         "reply_to_post_number": null
+      },
+      {
+        "username": "nicman23",
+        "post_number": 584,
+        "created_at": "2026-05-08T06:30:42.009Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077180,
+        "content_markdown": "can you change the host - meaning .0 vf - vram? because i just yesterday made a whole project to alloc x amount of vram with vulkan as a workaround",
+        "trust_level": 2,
+        "reply_to_post_number": 583
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 585,
+        "created_at": "2026-05-08T07:17:08.101Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077184,
+        "content_markdown": "Using the feature I mentioned above, you can specify the VRAM size for each VF.\n\nThe remaining VRAM will then be used by the PF, which is the host.\n\nI currently have one 2GB VF and two 4GB VFs enabled, with about 6GB of VRAM remaining for the host.",
+        "trust_level": 1,
+        "reply_to_post_number": 584
+      },
+      {
+        "username": "nicman23",
+        "post_number": 586,
+        "created_at": "2026-05-08T07:19:20.030Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077186,
+        "content_markdown": "my issue is that i want the host to also use the gpu for display out and acceleration. which is what i am doing now with this [GitHub - nicman23/b50-sriov-alloc: Allocates b50 VRAM to host before sr-iov vf creation \u00b7 GitHub](https://github.com/nicman23/b50-sriov-alloc/)",
+        "trust_level": 2,
+        "reply_to_post_number": 585
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 587,
+        "created_at": "2026-05-08T07:40:17.216Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077187,
+        "content_markdown": "In principle, to reserve VRAM for the PF, you have to occupy that memory first and then release it after the VF is created.\n\nI previously used **vramfs** to mount VRAM as a directory, while the project you sent seems to use **Vulkan**\u2014the underlying logic is basically the same.\n\nPersonally, I think just creating the VF and then downsizing its VRAM achieves the same goal and is much more flexible.",
+        "trust_level": 1,
+        "reply_to_post_number": 586
+      },
+      {
+        "username": "nicman23",
+        "post_number": 588,
+        "created_at": "2026-05-08T07:55:25.865Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077189,
+        "content_markdown": "is the downsized ram available to the host? if so then yea",
+        "trust_level": 2,
+        "reply_to_post_number": 587
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 589,
+        "created_at": "2026-05-08T08:18:56.861Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077192,
+        "content_markdown": "Of course, the downsized VRAM can be used by the host.\n\n[20260508-1547361681\u00d7678 191 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/7/e/3/7e343e51b567f7f0684b908cbd3ac93faf89222e.jpeg \"20260508-154736\")\n\n  \nHowever, this requires the kernel to support modifying **vram\\_quota**.\n\nIf the kernel does not support it, you can only use the old method.",
+        "trust_level": 1,
+        "reply_to_post_number": 588
+      },
+      {
+        "username": "nicman23",
+        "post_number": 590,
+        "created_at": "2026-05-08T10:52:04.568Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077236,
+        "content_markdown": "sorry but what tui is that? it is quite nice",
+        "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 591,
+        "created_at": "2026-05-08T11:50:41.479Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077250,
+        "content_markdown": "nvtop",
+        "trust_level": 1,
+        "reply_to_post_number": 590
+      },
+      {
+        "username": "Odyssey",
+        "post_number": 592,
+        "created_at": "2026-05-08T18:01:54.712Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077324,
+        "content_markdown": "Very nice! Thanks for posting this will play around with the resizing. I really don\u2019t need a full 7GB of VRAM allocated to my Ubuntu VM (after allocating 2GB to host) so being able to push the Windows VM up to say 10GB to give more flexibility for AI tasks etc would be very useful.\n\nEDIT: Need to play around with this further but it appears there is a maximum size for each VF being the total VRAM of the GPU divided by the # of VF\u2019s. So 8GB of VRAM is the highest I can go with 2 VF\u2019s even if I set the other one to a much lower quota.\n\nIt still lets you set a higher quota than the max, and interestingly enough the quota is still the deciding factor of how much VRAM is left over for the host.. So I had 1x 8GB VF, 1x 4GB VF, and only 2GB VRAM for the host.. The remaining 2GB of VRAM just ends up in the void lol.",
+        "trust_level": 1,
+        "reply_to_post_number": 583
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 593,
+        "created_at": "2026-05-09T01:49:23.732Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4077392,
+        "content_markdown": "This is likely a firmware limitation; VF can only map a limited LMEM address space.\n\nEven with more VRAM allocated, the guest cannot see it.\n\n```\nroot@epyc:~# echo 2 > /sys/bus/pci/devices/0000:23:00.0/sriov_numvfs\nroot@epyc:~# lspci -vvv -s 23:00.1\n23:00.1 VGA compatible controller: Intel Corporation Battlemage G21 [Intel Graphics] \n        Region 2: Memory at 6f800000000 (64-bit, prefetchable) [virtual] [size=8G]\n```\n\n```\nroot@epyc:~# echo 3 > /sys/bus/pci/devices/0000:23:00.0/sriov_numvfs\nroot@epyc:~# lspci -vvv -s 23:00.1\n23:00.1 VGA compatible controller: Intel Corporation Battlemage G21 [Intel Graphics] \n        Region 2: Memory at 6f800000000 (64-bit, prefetchable) [virtual] [size=8G]\n```\n\n```\nroot@epyc:~# echo 4 > /sys/bus/pci/devices/0000:23:00.0/sriov_numvfs\nroot@epyc:~# lspci -vvv -s 23:00.1\n23:00.1 VGA compatible controller: Intel Corporation Battlemage G21 [Intel Graphics] \n        Region 2: Memory at 6f800000000 (64-bit, prefetchable) [virtual] [size=4G]\n```\n\nFor now, it\u2019s better to run tasks with high VRAM requirements on the host.",
+        "trust_level": 1,
+        "reply_to_post_number": 592
       }
     ]
   }
