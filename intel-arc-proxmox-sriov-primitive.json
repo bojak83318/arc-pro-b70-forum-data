@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-05-13T03:31:21Z",
+  "timestamp": "2026-05-14T03:31:26Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6442,6 +6442,72 @@
         "content_markdown": "Yup, using the method mal7hael found in Proxmox with kernel 7.0 to allocate different VRAM amounts to 2x VF\u2019s assigned to VMs and leave around 2.5GB for the root card for Plex transcoding, on my B50 on the latest firmware (ie max 2 VF\u2019s).",
         "trust_level": 1,
         "reply_to_post_number": 597
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 599,
+        "created_at": "2026-05-13T06:03:07.312Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078447,
+        "content_markdown": "Yes, B50 can do that.\n\nHowever, there is a limitation: when VF is created, the maximum amount of VRAM that each VF can use is already limited. Even if a larger amount of VRAM is allocated, the guest cannot use it.\n\nIn other words, this method can only make the PF have more available VRAM by reducing the VF\u2019s VRAM.\n\nA side note: **CoiaPrant** found a fix for the **Code 43** error on the latest drivers.\n\nYou have to disable all options related to hiding virtualization; for example, you need to **remove** parameters like `kvm=off` and `-hypervisor`, and turn **off** the \u2018Primary GPU\u2019 option.\n\nI gave it a shot, and driver **8517** doesn\u2019t report Code 43 anymore. But the trade-off is that some games with anti-cheat won\u2019t run now\u2026\n\nVMs that need to hide virtualization can only use the **8314** driver.",
+        "trust_level": 1,
+        "reply_to_post_number": 597
+      },
+      {
+        "username": "Odyssey",
+        "post_number": 600,
+        "created_at": "2026-05-13T12:52:25.954Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078528,
+        "content_markdown": "Great news concerning the Code 43 driver issue, will go ahead and apply the settings as I\u2019m not using the B50 for gaming. I wonder if it will have any effect on the issues I\u2019ve had with GPU acceleration over RDP with a VF in Windows 11.. Will test that out as well.\n\nAnd just a note on the maximum VRAM limitation on a VF (ie the max VRAM for a VF that a guest will recognize is the total VRAM of the GPU divided by the # of VF\u2019s), if you create only 1 VF and reserve VRAM for the host / root card that will give you the ability to have a VF assigned to a VM with more than 8GB of VRAM on the B50 while still allowing you to utilize the card in the host OS and any containers hosted by it. Obviously only something to consider if you really need the maximum amount of VRAM in a guest VM while also needing host / container GPU acceleration.",
+        "trust_level": 1,
+        "reply_to_post_number": 599
+      },
+      {
+        "username": "Odyssey",
+        "post_number": 601,
+        "created_at": "2026-05-13T14:06:33.925Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078538,
+        "content_markdown": "Was going to try the Code 43 fix and realized I already had KVM on + I\u2019m using the host CPU option and had Primary GPU off already, still code 43 with latest driver.\n\nCan you share the output of your KVM configuration file for the Windows VM?",
+        "trust_level": 1,
+        "reply_to_post_number": 599
+      },
+      {
+        "username": "just_anon",
+        "post_number": 602,
+        "created_at": "2026-05-13T17:57:34.539Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078618,
+        "content_markdown": "yes, exactly that",
+        "trust_level": 2,
+        "reply_to_post_number": 595
+      },
+      {
+        "username": "Shadowbane",
+        "post_number": 603,
+        "created_at": "2026-05-13T20:24:36.094Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078664,
+        "content_markdown": "just\\_anon:\n\n> I may be completely wrong here but I thought that with SR-IOV each VF should have access to all of GPUs resources if other VF\u2019s don\u2019t request them at the same time.\n\nAs I understand it, with Intel **SR-IOV**, unused *compute resources* can be shared dynamically between VFs, but **VRAM is statically partitioned**.\n\nFor example, if you create 4 VFs and the GPU has 24 GB of VRAM, each VF gets 6 GB. That allocation is fixed. Even if only one VF is active, it still only has access to its assigned 6 GB\u2014the remaining VRAM allocated to the other VFs isn\u2019t available to it.\n\nHowever, other GPU resources\u2014such as compute, scheduling time, and execution units can be more flexibly utilized. If other VFs are idle, the active VF can effectively take advantage of those unused resources.\n\nSo in practice:\n\n* **VRAM:** statically divided, not shared\n* **Compute/throughput:** more dynamically utilized across active VFs",
+        "trust_level": 3,
+        "reply_to_post_number": 561
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 604,
+        "created_at": "2026-05-14T00:41:38.331Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078728,
+        "content_markdown": "In fact, if Windows Task Manager displays \u201cVirtual Machine: Yes\u201d, it won\u2019t report code 43.\n\nHyper-V also makes the system think it\u2019s not in a virtual environment. Since I don\u2019t have any nested virtualization needs, I simply disabled it.\n\nThese are probably the only useful line of the configuration file.\n\n```\ncpu: host,flags=-nested-virt\n```",
+        "trust_level": 1,
+        "reply_to_post_number": 601
       }
     ]
   }
