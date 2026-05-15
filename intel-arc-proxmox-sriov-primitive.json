@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-05-14T03:31:26Z",
+  "timestamp": "2026-05-15T03:34:34Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6508,6 +6508,50 @@
         "content_markdown": "In fact, if Windows Task Manager displays \u201cVirtual Machine: Yes\u201d, it won\u2019t report code 43.\n\nHyper-V also makes the system think it\u2019s not in a virtual environment. Since I don\u2019t have any nested virtualization needs, I simply disabled it.\n\nThese are probably the only useful line of the configuration file.\n\n```\ncpu: host,flags=-nested-virt\n```",
         "trust_level": 1,
         "reply_to_post_number": 601
+      },
+      {
+        "username": "Fartbubbler",
+        "post_number": 605,
+        "created_at": "2026-05-14T14:23:09.295Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078888,
+        "content_markdown": "Do you have a link to the BIOS? I can\u2019t seem to find anything.",
+        "trust_level": 1,
+        "reply_to_post_number": 580
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 606,
+        "created_at": "2026-05-14T14:48:43.089Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078891,
+        "content_markdown": "It seems this resource is only available on the official Chinese website.\n\n<https://download.gunnir.com/CnDownload/BIOS/E212_0x1EF7_0x2522_677_BKC.7z>",
+        "trust_level": 1,
+        "reply_to_post_number": 605
+      },
+      {
+        "username": "Odyssey",
+        "post_number": 607,
+        "created_at": "2026-05-14T14:49:34.234Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078892,
+        "content_markdown": "No luck here sadly, task manager reports Virtual machine: yes and I also tried turning off nested virtualization on the CPU (was default on).. Still Code 43 on the latest driver, works on 8314.\n\nWill try a few other things such as a different virtio driver version.",
+        "trust_level": 1,
+        "reply_to_post_number": 604
+      },
+      {
+        "username": "Hege",
+        "post_number": 608,
+        "created_at": "2026-05-14T18:52:05.124Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4078935,
+        "content_markdown": "Intel is allegedly looking into the code 43 issue in their official open source issue tracker:\n\n[github.com/IGCIT/Intel-GPU-Community-Issue-Tracker-IGCIT](https://github.com/IGCIT/Intel-GPU-Community-Issue-Tracker-IGCIT/issues/1394)\n\n#### [Intel Graphics driver fails to load for SR-IOV VF in nested Hyper-V environment](https://github.com/IGCIT/Intel-GPU-Community-Issue-Tracker-IGCIT/issues/1394)\n\nopened 07:49AM - 06 Mar 26 UTC\n\n[tbrethome](https://github.com/tbrethome)\n\nSupport Request\n\n### Requirements\n- [x] Device is using the [latest drivers](https://github.com/\u2026IGCIT/Intel-GPU-Community-Issue-Tracker-IGCIT/wiki/Intel-driver-updates)\n- [x] Application is not cracked\n### Application\nWindows 11\n### Application Link\n\\_No response\\_\n### Processor / Processor Number\nUltra 7 265H, Ultra 7 165U, Core i7-1370p, Core i7 14700HX, ...\n### Graphic Card\nXe Graphics, UHD Graphics for 14th gen\n### GPU Driver Version\n32.0.101.8531\n### Other GPU Driver version\n\\_No response\\_\n### Rendering API\nNot applicable\n### Windows Build\nWindows 11 25H2\n### Other Windows build\n\\_No response\\_\n### Intel System Support Utility report\n[intel\\_ssu\\_report.txt](https://github.com/user-attachments/files/25788637/intel\\_ssu\\_report.txt)\n### Description and steps to reproduce\nWhen using VFIO SR-IOV VF GPU passthrough under a QEMU/KVM host to pass an Intel GPU to a Windows 11 guest with Hyper-V enabled (VBS/HVCI), the driver fails to load with Code 43. The same driver loads and operates correctly, including running GPU-accelerated applications, when Hyper-V is disabled in the guest.\nUsing QEMU's tracing capabilities and CPUID hypervisor leaf spoofing, I've been able to narrow down the issue to the hypervisor detection logic in the driver's initialization path. Here's my understanding, though I may be off on the details since I don't have access to the source :) :\nWhen the driver detects a KVM or VMware hypervisor via CPUID -> it takes a virtualized/SR-IOV initialization path -> works correctly\nWhen the driver detects it's running as a Hyper-V guest (child partition) -> it takes a virtualized/SR-IOV initialization path -> works correctly\nWhen the driver detects it's running on a Hyper-V host (root partition, via the CpuManagement privilege in CPUID 0x40000003) -> it takes a full/native initialization path -> fails with Code 43 because the GPU is actually a passthrough VF, not a natively attached device\nT\nhis makes sense for bare-metal scenarios where Hyper-V is enabled alongside a physically present GPU. However, in nested virtualization, where Windows runs its own Hyper-V inside a VM, the driver misidentifies the environment as a native Hyper-V host and attempts an initialization path that the passthrough GPU VF cannot satisfy.\nSuggested fix: during hypervisor detection, the driver could additionally check CPUID leaf 0x40000004 EAX bit 12 (the \"hypervisor is nested\" indicator, see [https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/feature-discovery](url) ). If that bit is set, the driver would know it's running inside a nested hypervisor rather than on bare metal, and could take the virtualized/SR-IOV path instead. This should be safe for bare-metal configurations where that bit is always 0, and would enable full Windows 11 Hyper-V support for VFIO GPU passthrough scenarios.\nThanks a lot for your help!\n### Device\n\\_No response\\_\n### Crash dumps\n\\_No response\\_\n### Application / Windows logs\n\\_No response\\_",
+        "trust_level": 2,
+        "reply_to_post_number": 607
       }
     ]
   }
