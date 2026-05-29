@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-05-23T03:21:40Z",
+  "timestamp": "2026-05-29T03:41:07Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6607,6 +6607,28 @@
         "content_markdown": "I started getting Code 43 at some point in the past few weeks, presumably after updating to kernel 7.0 or PVE 9.2. Switching *Processor type* from \u201cx86-64-v3\u201d to \u201cHost\u201d resolved the issue for me. Unfortunately this has other performance implications for Windows VMs.\n\nETA: Trying with flags `+amd-no-ssb,+md-clear` for now\u2026",
         "trust_level": 2,
         "reply_to_post_number": null
+      },
+      {
+        "username": "rabbithole",
+        "post_number": 614,
+        "created_at": "2026-05-28T15:59:35.216Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4082661,
+        "content_markdown": "Hello everyone,\n\nI\u2019m trying to find out whether it\u2019s possible to enable or configure Resizable BAR (ReBAR) on a Fujitsu Celsius R970B Power workstation with the D3488-A2 motherboard running the latest available BIOS version.\n\nThe system officially supports \u201cAbove 4G Decoding,\u201d but there is no official mention of ReBAR support anywhere in the BIOS documentation or firmware notes.\n\nI have already gone through every BIOS setting available on this motherboard, and there is no option related to ReBAR or Resizable BAR at all. The only relevant setting I can find is \u201cAbove 4G Decoding,\u201d which is already enabled.\n\nWhat makes this confusing is that with the first firmware and driver release that enabled SR-IOV for the Intel Arc Pro B50, I was actually able to partition the GPU into 12 virtual functions successfully. After updating to newer drivers, this functionality stopped working completely.\n\nBecause of this, I suspect that ReBAR support may either be partially implemented, hidden, or unsupported by the BIOS despite 4G Decoding being available.\n\nHas anyone managed to get ReBAR working on this platform, or knows whether it can be enabled through hidden BIOS settings, EFI shell tools, or BIOS modding?\n\nIf BIOS modification is required, I would also really appreciate guidance toward the right tools, documentation, or communities/forums where people work on modding BIOS firmware to add unsupported features like ReBAR.\n\nI already contacted Fujitsu support, but unfortunately they refused to provide any technical information.\n\nAny help or insight would be greatly appreciated.\n\n/n00b",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "Sudo_Apt",
+        "post_number": 615,
+        "created_at": "2026-05-28T18:50:36.309Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4082704,
+        "content_markdown": "rabbithole:\n\n> If BIOS modification is required, I would also really appreciate guidance toward the right tools, documentation, or communities/forums where people work on modding BIOS firmware to add unsupported features like ReBAR.\n\n\n\n[bios-mods.com](https://www.bios-mods.com/forum/)\n\n### [Bios Mods - The Best BIOS Update and Modification Source](https://www.bios-mods.com/forum/)",
+        "trust_level": 2,
+        "reply_to_post_number": 614
       }
     ]
   }
