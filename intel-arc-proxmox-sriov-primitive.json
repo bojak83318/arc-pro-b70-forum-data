@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-06-02T04:03:08Z",
+  "timestamp": "2026-06-03T04:12:28Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6673,6 +6673,50 @@
         "content_markdown": "My nodes are all desktop Zen3 and unfortunately all of the built-in EPYC CPU profiles either won\u2019t boot or lead to the Code 43 error in Windows.",
         "trust_level": 2,
         "reply_to_post_number": 618
+      },
+      {
+        "username": "hakan",
+        "post_number": 620,
+        "created_at": "2026-06-02T06:36:23.529Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4083945,
+        "content_markdown": "Months after intel\u2019s \u201coh really, did vf count really go from 12 to 2, let me check\u201d post on the official forum, we finally got an answer. 2VFs are intentional and here to stay. Yet gunnir offers 4vfs. oh intel\u2026",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "taug",
+        "post_number": 621,
+        "created_at": "2026-06-02T07:00:48.049Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4083946,
+        "content_markdown": "intel might as well have made it 1 VF. just as useless. thanks everyone for beta testing for them though /s",
+        "trust_level": 0,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "bambinone",
+        "post_number": 622,
+        "created_at": "2026-06-02T17:01:17.989Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084115,
+        "content_markdown": "hakan:\n\n> Yet gunnir offers 4vfs\n\nWho\u2019s brave enough to attempt a cross-flash?\n\ntaug:\n\n> intel might as well have made it 1 VF. just as useless.\n\nIt\u2019s right on the edge. If I could reliably pass two VFs through to guests and still use video out and codecs on the host side it would be serviceable. But it\u2019s been hit or miss for me; it seems like I need to start all the guests before the host does anything, otherwise one of the VFs won\u2019t be usable.",
+        "trust_level": 2,
+        "reply_to_post_number": 620
+      },
+      {
+        "username": "IroesStrongarm",
+        "post_number": 623,
+        "created_at": "2026-06-02T20:19:22.004Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084200,
+        "content_markdown": "Have the B50 in a test system still. I have the old firmware with 12 VFs. Works fine in Proxmox on Kernel 7.0.2-6-pve. I updated and got the latest 7.0.6-2-pve. This broke SR-IOV on the card (at least with old firmware). When trying to `echo 4 > sriov_numvfs` I get the following:\n\n`-bash: echo: write error: Cannot allocate memory`\n\nRolling back to 7.0.2-6 fixes the issue. Not sure if this is intentional to stop the old firmware from working, or just a breakage in the new kernel. I\u2019ll keep an eye on it when the next kernel comes out but thought I\u2019d share.",
+        "trust_level": 1,
+        "reply_to_post_number": null
       }
     ]
   }
