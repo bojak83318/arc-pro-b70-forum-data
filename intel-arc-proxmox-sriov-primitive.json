@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-06-04T04:05:46Z",
+  "timestamp": "2026-06-05T03:52:08Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6761,6 +6761,127 @@
         "content_markdown": "```\nroot@epyc:~# uname -a\nLinux epyc 7.0.6-2-pve #1 SMP PREEMPT_DYNAMIC PMX 7.0.6-2 (2026-05-29T11:08Z) x86_64 GNU/Linux\nroot@epyc:~# cat /sys/bus/pci/devices/0000:23:00.0/sriov_numvfs\n4\n```\n\nI\u2019m running the latest PVE kernel (7.0.6-2-pve), and the 6979 firmware is able to enable 4 VFs without any issues.",
         "trust_level": 1,
         "reply_to_post_number": 623
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 629,
+        "created_at": "2026-06-04T05:47:23.421Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084742,
+        "content_markdown": "Now that Intel has [made its position clear](https://www.intel.com/content/www/us/en/support/articles/000102857/graphics.html#resolution), users are left to find their own solutions.\n\n[Here](https://file.homelabproject.cc/local/Server/Src/B50) is a Chinese tutorial that explains how to enable 12 VFs on the latest firmware.\n\nThe method works by first upgrading to the latest firmware, and then separately flashing the config-data from firmware version 6979, which contains the 12-VF configuration.\n\nDue to Intel\u2019s signature restrictions, we cannot modify the VF count independently and must instead use a replacement approach. As a result, any other changes contained in the config-data will also be reverted to the 6979 version.\n\n**Risk Warning**\n\n> **Warning:** This has only been tested on my own card and has not undergone large-scale validation.\n>\n> The process is reversible\u2014you can flash back to a different firmware at any time\u2014and the theoretical risk is quite low. However, firmware flashing is never completely risk-free.\n>\n> **!!! If something goes wrong, you are responsible for the consequences !!!**\n>\n> Do **not** use this on cards whose subsystem ID is **not** **8086:1114** (for example, OEM versions such as the Gunnir models, which use **1ef7:2522**). Signed config-data is matched against the card\u2019s subsystem ID (SSID), so the firmware will not recognize the config-data if the IDs do not match.\n\nI tried it myself and was able to enable 12 VFs on the latest firmware. Since I\u2019m not sure exactly what changes the newest firmware includes, I\u2019m currently unable to perform targeted testing.\n\n```\nroot@epyc:~# igsc list-devices\nDevice [1] '/dev/mei0': 8086:e212 8086:1114 0000:23:00.00\nroot@epyc:~# igsc fw version -d /dev/mei0\nDevice: FW Version: BMG__21.1162    ##Firmware version 6979\n\n##Update to firmware 8517 on Windows system\n\nroot@epyc:~# igsc fw version -d /dev/mei0\nDevice: FW Version: BMG__21.1177    ##Firmware version 8517\n\nroot@epyc:~# cat /sys/bus/pci/devices/0000:23:00.0/sriov_totalvfs\n2    ##8517 only supports enabling 2 VFs\n\nroot@epyc:~# igsc fw-data update -d /dev/mei0 --image /root/b50_config-data_6979.bin --allow-downgrade    \n##You can download this bin file from the link above.\nImage:  Fw Data Version: Format 2, Major Version: 203, OEM Manufacturing Data Version: 31, Major VCN: 0\n    OEM Manufacturing Data Version FITB: 999999, Flags: 0X00000000, ARB SVN: 1, ARB SVN FITB: 999999\nDevice: Fw Data Version: Format 2, Major Version: 203, OEM Manufacturing Data Version: 41, Major VCN: 0\n    OEM Manufacturing Data Version FITB: 999999, Flags: 0X00000000, ARB SVN: 1, ARB SVN FITB: 999999\nProgress 100/100:100%\nFirmware status: Success (0x0)\n\nreboot\n\nroot@epyc:~# igsc fw version -d /dev/mei0\nDevice: FW Version: BMG__21.1177\nroot@epyc:~# igsc fw-data version -d /dev/mei0\nDevice: Fw Data Version: Format 2, Major Version: 203, OEM Manufacturing Data Version: 31, Major VCN: 0\n    OEM Manufacturing Data Version FITB: 999999, Flags: 0X00000000, ARB SVN: 1, ARB SVN FITB: 999999\n\nroot@epyc:~# cat /sys/bus/pci/devices/0000:23:00.0/sriov_totalvfs\n12\n\nroot@epyc:~# echo 12 > /sys/bus/pci/devices/0000:23:00.0/sriov_numvfs\nroot@epyc:~# lspci -nn | grep -i e212\n23:00.0 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:00.1 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:00.2 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:00.3 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:00.4 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:00.5 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:00.6 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:00.7 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:01.0 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:01.1 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:01.2 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:01.3 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n23:01.4 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n```\n\nI\u2019ll let it run for a few days and will report back if any issues arise.",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "nicman23",
+        "post_number": 630,
+        "created_at": "2026-06-04T13:03:58.845Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084817,
+        "content_markdown": "what i have been doing because i needed 3 vfs basically is to use the main .0 in a docker",
+        "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "OffGrid0000",
+        "post_number": 631,
+        "created_at": "2026-06-04T13:22:39.509Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084821,
+        "content_markdown": "I\u2019ve been doing this for months without issues, I haven\u2019t noticed anything different from 6979 in performance or stability except my fan doesn\u2019t run at full blast at idle while VMs are on.",
+        "trust_level": 1,
+        "reply_to_post_number": 629
+      },
+      {
+        "username": "steelghost",
+        "post_number": 632,
+        "created_at": "2026-06-04T13:23:00.406Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084822,
+        "content_markdown": "Interested to hear how you get on with that. I don\u2019t need 12 VFs but the ability to have three or four would be handy for sure.\n\nI wonder is there a risk that the linux firmware tool overwrites this? I seem to recall there\u2019s options to pin firmware versions for some devices - time to go look at the manual pages for fwupdmgr or whatever the command name is.",
+        "trust_level": 2,
+        "reply_to_post_number": 629
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 633,
+        "created_at": "2026-06-04T15:05:54.680Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084844,
+        "content_markdown": "I did encounter some stability issues when using the \u201cpure 6979\u201d firmware.\n\nWhen multiple VFs are running games simultaneously, there\u2019s a very small chance it will cause the host machine to restart.\n\nI\u2019m not sure if the \u201chybrid firmware\u201d will fix this problem.",
+        "trust_level": 1,
+        "reply_to_post_number": 631
+      },
+      {
+        "username": "bambinone",
+        "post_number": 634,
+        "created_at": "2026-06-04T16:29:58.659Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084863,
+        "content_markdown": "mal7hael:\n\n> I did encounter some stability issues when using the 6979 firmware.\n\nUsing the 6979 firmware or using the 8517 firmware and the 6979 config data?",
+        "trust_level": 2,
+        "reply_to_post_number": 633
+      },
+      {
+        "username": "Virtual_Law",
+        "post_number": 635,
+        "created_at": "2026-06-04T16:42:20.438Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084869,
+        "content_markdown": "It\u2019s\\*",
+        "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "dobodu",
+        "post_number": 636,
+        "created_at": "2026-06-04T21:43:34.926Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4084989,
+        "content_markdown": "mal7hael:\n\n> ```\n> root@epyc:~# echo 12 > /sys/bus/pci/devices/0000:23:00.0/sriov_numvfs\n> root@epyc:~# lspci -nn | grep -i e212\n> 23:00.0 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:00.1 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:00.2 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:00.3 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:00.4 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:00.5 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:00.6 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:00.7 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:01.0 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:01.1 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:01.2 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:01.3 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> 23:01.4 VGA compatible controller [0300]: Intel Corporation Battlemage G21 [Intel Graphics] [8086:e212]\n> ```\n\nI\u2019ll try too !",
+        "trust_level": 0,
+        "reply_to_post_number": 628
+      },
+      {
+        "username": "Migsi",
+        "post_number": 637,
+        "created_at": "2026-06-04T22:37:58.614Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4085001,
+        "content_markdown": "Just to be sure: There is no way to pass thorugh the PF while using VFs in other VMs, right? Would love to have some graphics output for a home theater VM while making use of the rest of the card for other workloads.",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "mal7hael",
+        "post_number": 638,
+        "created_at": "2026-06-04T22:40:26.939Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4085003,
+        "content_markdown": "This issue was encountered when using the pure 6979 firmware.\n\nSo far, I haven\u2019t encountered any problems with the \u201chybrid firmware\u201d.",
+        "trust_level": 1,
+        "reply_to_post_number": 634
+      },
+      {
+        "username": "quilt",
+        "post_number": 639,
+        "created_at": "2026-06-05T01:06:19.528Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4085043,
+        "content_markdown": "No, not possible. It is possible to use the PF on the host, however, for graphics output (look at the thread [Virtualization workstation with the Intel Arc Pro B50](https://forum.level1techs.com/t/virtualization-workstation-with-the-intel-arc-pro-b50/243577) for info (since kernel 7.0 it is possible to manually set VRAM per VF, which is necessary to have a usable PF with a few GBs of VRAM left).",
+        "trust_level": 2,
+        "reply_to_post_number": 637
       }
     ]
   }
