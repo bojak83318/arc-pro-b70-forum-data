@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-06-08T04:05:00Z",
+  "timestamp": "2026-06-12T04:03:12Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6937,6 +6937,28 @@
         "content_markdown": "Some other things I noticed after I updated my system:  \nI have all the new sriov control features from kernel 7.0 like vram allocation working fine with 4 VFs.  \nI noticed that the VFs are no longer bound by the generic vfio-pcie module when passing them to virtual machines. Instead they are now bound by \u201cxe-vfio-pci\u201c. The PF is still xe.  \nThe newest windows drivers give me code 43. Even if I disable svm cpu feature passing in libvirt and I remove all the hyperv devices.  \nThe 8314 and 6979 drivers still work just fine, even though the updated firmware components are from 8517.  \nI noticed that the h264 encoder refuses to encode streams >170fps. I don\u2019t know if that was the case earlier. The h265 and av1 encoders still work fine at 240fps/1080p though.  \nI haven\u2019t tried enabling aspm yet, but I\u2019m hoping that it now works without maxing out the fan.  \nAlso, disable virtual display driver when updating the intel driver or you get a bluescreen.",
         "trust_level": 1,
         "reply_to_post_number": null
+      },
+      {
+        "username": "AnnaRenee87",
+        "post_number": 645,
+        "created_at": "2026-06-11T04:16:27.861Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4086842,
+        "content_markdown": "mal7hael:\n\n> ```\n> root@epyc:~# igsc fw version -d /dev/mei0\n> Device: FW Version: BMG__21.1177\n> ```\n\nThis worked pretty good on Unraid, thanks!",
+        "trust_level": 1,
+        "reply_to_post_number": 629
+      },
+      {
+        "username": "cybrnook",
+        "post_number": 646,
+        "created_at": "2026-06-11T21:47:54.049Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4087054,
+        "content_markdown": "Same, worked good under Unraid. One item I found, trying to sources the binaries independently (igsc and the bin file) was that the precompiled igsc file I was trying to use from Solaris17 would not work. I ended up using the igsc from the shared above repo and that one behaved differntly and allowed the downgrade.",
+        "trust_level": 2,
+        "reply_to_post_number": 645
       }
     ]
   }
