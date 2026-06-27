@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-06-17T04:11:59Z",
+  "timestamp": "2026-06-27T03:31:24Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -6970,6 +6970,39 @@
         "content_markdown": "Hey [@marcin212](/u/marcin212), did you manage to get it working? I\u2019m having the same issue. Did you find a solution to get it running on X11?",
         "trust_level": 0,
         "reply_to_post_number": 332
+      },
+      {
+        "username": "msx0",
+        "post_number": 648,
+        "created_at": "2026-06-26T08:33:35.500Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4090882,
+        "content_markdown": "Got one of the 4 VFs fully working on linux while running windows on another VM. You just need a second card that has a monitor attached (like virtio-gpu or vkms).  \nFor KDE/KWin 6.7.0 you also need to patch out a line that ignores GPUs without KMS support and set KWIN\\_DRM\\_DEVICES properly.  \nFor remote access you also want to enable auto-login to skip sddm and set up sunshine with VAAPI encoding and KWin capture (Instead of KMS)\n\n[linuxvm1949\u00d71128 1.69 MB](https://level1techs.us-east-1.linodeobjects.com/original/4X/8/8/9/8892238b5e6e87829111d2ad8c397181a040df3e.png \"linuxvm\")",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "msx0",
+        "post_number": 649,
+        "created_at": "2026-06-26T09:00:31.090Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4090892,
+        "content_markdown": "For me, the B50 is at PCI 08:00.0 and virtio-gpu is at 00:01.0  \n`msx@vibepc:~$ lspci`   \n`00:01.0 VGA compatible controller: Red Hat, Inc. Virtio 1.0 GPU (rev 01)`   \n`08:00.0 VGA compatible controller: Intel Corporation Battlemage G21 [Arc Pro B50]`\n\nThe DRM device paths were as such:  \n`msx@vibepc:~$ ls -lah /dev/dri/by-path/`   \n`lrwxrwxrwx. 1 root root 8 06-25 15:33` **`pci-0000:00:01.0-card`**`->`**`../card1`**  \n`lrwxrwxrwx. 1 root root 13 06-25 15:33` **`pci-0000:00:01.0-render`**`->`**`../renderD128`**  \n`lrwxrwxrwx. 1 root root 8 06-25 15:33` **`pci-0000:08:00.0-card`**`->`**`../card0`**  \n`lrwxrwxrwx. 1 root root 13 06-25 15:33` **`pci-0000:08:00.0-render`**`->`**`../renderD129`**\n\nSo I configured KWin to render on intel and display on virtio:  \n#`/home/msx/.config/environment.d/kwin.conf`  \n`KWIN_DRM_DEVICES='/dev/dri/by-path/pci-0000\\:08\\:00.0-card:/dev/dri/by-path/pci-0000\\:00\\:01.0-card'`  \n(I also had to specify the intel card path in sunshine UI later)\n\nThe only remaining problem was that KWin by default rejects GPUs with no display capabilities like the intel VF (Even though it now fully supports them!). So you have to apply this patch:\n\n```\ndiff -uNrp orginal/src/backends/drm/drm_backend.cpp modded/src/backends/drm/drm_backend.cpp\n--- orginal/src/backends/drm/drm_backend.cpp    2026-06-25 10:53:33.294616668 +0000\n+++ modded/src/backends/drm/drm_backend.cpp     2026-06-25 10:53:33.377775188 +0000\n@@ -248,9 +248,16 @@ DrmGpu *DrmBackend::addGpu(const QString\n     }\n \n     if (!drmIsKMS(*fd)) {\n-        qCDebug(KWIN_DRM) << \"Skipping KMS incapable drm device node at\" << fileName;\n-        m_session->closeRestricted(*fd);\n-        return nullptr;\n+        // A render-only device (e.g. an SR-IOV VF with no display engine) has no\n+        // KMS capabilities but can still serve as the primary *render* GPU, with\n+        // outputs/modeset provided by a different (KMS-capable) GPU. Only reject\n+        // it if it cannot render either.\n+        if (drmGetRenderDeviceNameFromFd(*fd) == nullptr) {\n+            qCDebug(KWIN_DRM) << \"Skipping device with neither KMS nor render node:\" << fileName;\n+            m_session->closeRestricted(*fd);\n+            return nullptr;\n+        }\n+        qCDebug(KWIN_DRM) << \"Admitting render-only (non-KMS) device:\" << fileName;\n     }\n \n     auto drmDevice = DrmDevice::openWithAuthentication(fileName, *fd);\n```",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "msx0",
+        "post_number": 650,
+        "created_at": "2026-06-26T09:58:12.148Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4090901,
+        "content_markdown": "Some more notes for future reference:  \n-The virtio-gpu display is still mapped to the qemu/kvm VNC/SPICE output so you can view your accelerated graphics in the standard virt-manager window.\n\n-You can configure the virtual screen connected to virtio-gpu via standard domain definition XML nodes. You can set EDID size,refresh rate,resolution etc. (via the edid option or xres/yres options). Also, there are always kscreen-doctor/xrandr custom modes, and I think there is a kernel-parameter-level EDID override.\n\n-According to [virtio-gpu and qemu graphics in 2021 | \ud83c\uddfa\ud83c\udde6 kraxel\u2019s news](https://www.kraxel.org/blog/2021/05/virtio-gpu-qemu-graphics-update/) and the few other resources I found, if you set up virtio-gpu with no 3D paravirtualization but still with host memory access (with the blob parameter), you can get low latency zero-copy/dmabuf display in a window on your host like with looking glass on windows. (But I haven\u2019t tried this)\n\n-If you don\u2019t want virtio-gpu attached to your VM for some reason you can instead use vkms for completely-in-vm-kernel screen emulation. vkms \u201cgpu\u201ds don\u2019t present render nodes but they do present fully configurable KMS outputs. They also present a \u201cwriteback-connector\u201d which is something like a capture card with the virual screen content (But I don\u2019t think sunshine supports it as a capture method yet, still portals and plain KMS work)\n\n-To configure the vkms screens (Like to simulate being connected via HDMI speciffically, set EDID), you need this kernel patchset: [[PATCH v4 00/37] VKMS: Introduce multiple configFS attributes](https://lore.kernel.org/all/20260422-vkms-all-config-v4-0-dbb52e9aadc3@bootlin.com/)\n\n-Logind is annoying about preventing access to GPU devices when running kwin straight from ssh/tty due to some half-baked session/seat system. For testing you can just strip support out of KWin. The \u201cNoOP\u201d session backend has no such issues.",
+        "trust_level": 1,
+        "reply_to_post_number": null
       }
     ]
   }
