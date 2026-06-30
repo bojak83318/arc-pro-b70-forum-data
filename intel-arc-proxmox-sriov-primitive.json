@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-06-27T03:31:24Z",
+  "timestamp": "2026-06-30T03:41:41Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -7002,6 +7002,17 @@
         "post_id": 4090901,
         "content_markdown": "Some more notes for future reference:  \n-The virtio-gpu display is still mapped to the qemu/kvm VNC/SPICE output so you can view your accelerated graphics in the standard virt-manager window.\n\n-You can configure the virtual screen connected to virtio-gpu via standard domain definition XML nodes. You can set EDID size,refresh rate,resolution etc. (via the edid option or xres/yres options). Also, there are always kscreen-doctor/xrandr custom modes, and I think there is a kernel-parameter-level EDID override.\n\n-According to [virtio-gpu and qemu graphics in 2021 | \ud83c\uddfa\ud83c\udde6 kraxel\u2019s news](https://www.kraxel.org/blog/2021/05/virtio-gpu-qemu-graphics-update/) and the few other resources I found, if you set up virtio-gpu with no 3D paravirtualization but still with host memory access (with the blob parameter), you can get low latency zero-copy/dmabuf display in a window on your host like with looking glass on windows. (But I haven\u2019t tried this)\n\n-If you don\u2019t want virtio-gpu attached to your VM for some reason you can instead use vkms for completely-in-vm-kernel screen emulation. vkms \u201cgpu\u201ds don\u2019t present render nodes but they do present fully configurable KMS outputs. They also present a \u201cwriteback-connector\u201d which is something like a capture card with the virual screen content (But I don\u2019t think sunshine supports it as a capture method yet, still portals and plain KMS work)\n\n-To configure the vkms screens (Like to simulate being connected via HDMI speciffically, set EDID), you need this kernel patchset: [[PATCH v4 00/37] VKMS: Introduce multiple configFS attributes](https://lore.kernel.org/all/20260422-vkms-all-config-v4-0-dbb52e9aadc3@bootlin.com/)\n\n-Logind is annoying about preventing access to GPU devices when running kwin straight from ssh/tty due to some half-baked session/seat system. For testing you can just strip support out of KWin. The \u201cNoOP\u201d session backend has no such issues.",
         "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "Tes",
+        "post_number": 651,
+        "created_at": "2026-06-29T07:08:48.089Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4091905,
+        "content_markdown": "How can these 12 VFs on a B50 be sliced in terms on VRAM? Is it a simple division (4 VFs = 4GB/VF, \u2026) , or can u manually set how much VRAM a VF has?",
+        "trust_level": 0,
         "reply_to_post_number": null
       }
     ]
