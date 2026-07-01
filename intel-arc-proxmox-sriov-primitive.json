@@ -1,7 +1,7 @@
 {
   "primitive_id": "forum-topic-238107-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-06-30T03:41:41Z",
+  "timestamp": "2026-07-01T03:58:13Z",
   "source": "https://forum.level1techs.com/t/238107",
   "data": {
     "domain": "forum.level1techs.com",
@@ -7013,6 +7013,17 @@
         "post_id": 4091905,
         "content_markdown": "How can these 12 VFs on a B50 be sliced in terms on VRAM? Is it a simple division (4 VFs = 4GB/VF, \u2026) , or can u manually set how much VRAM a VF has?",
         "trust_level": 0,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "rgatte",
+        "post_number": 652,
+        "created_at": "2026-06-30T18:33:11.020Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Proxmox 9.0 + Intel B50 SR-IOV -- finally its almost here! Early Adopter's Guide",
+        "post_id": 4092425,
+        "content_markdown": "Has anyone managed to have a B50 vf with more than 8GB of VRAM work correctly using vram\\_quota when using 2 vfs? Seems like 8GiB (or actually `totalvram / numvfs`) is the maximum based on the guest dmesg output but I am wondering if its something that can be configured around. Trying to give 14GiB to one VF and 1.5GiB to another. Below is the dmesg output with the 14GiB vf (last 2 lines being the most relevant).\n\n```\n[    4.049333] xe 0000:07:00.0: [drm] Running in SR-IOV VF mode\n[    4.051723] xe 0000:07:00.0: [drm] VISIBLE VRAM: 0x00000e0000000000, 0x0000000200000000\n[    4.051727] xe 0000:07:00.0: [drm] Small BAR device\n[    4.051728] xe 0000:07:00.0: [drm] VRAM[0]: Actual physical size 0x0000000380000000, usable size exclude stolen 0x0000000380000000, CPU accessible size 0x0000000200000000\n[    4.051731] xe 0000:07:00.0: [drm] VRAM[0]: DPA range: [0x0000000000000000-380000000], io range: [0x00000e0000000000-e0200000000]\n[    4.051733] xe 0000:07:00.0: [drm] VRAM: 0x0000000380000000 is larger than resource 0x0000000200000000\n[    4.051735] xe 0000:07:00.0: [drm] Small BAR device\n```\n\nThis then leads to general issues like\n\n```\n$ sycl-ls\nWARNING: Resizable BAR not detected for device 0000:07:00.0\nWARNING: Resizable BAR not detected for device 0000:07:00.0\n[opencl:cpu][opencl:0] Intel(R) OpenCL, AMD Ryzen 9 5900X 12-Core Processor             OpenCL 3.0 (Build 0) [2026.21.3.0.31_160000]\n```\n\nas opposed to the following with 8GiB\n\n```\n[level_zero:gpu][level_zero:0] Intel(R) oneAPI Unified Runtime over Level-Zero V2, Intel(R) Arc(TM) Pro B50 Graphics 20.1.0 [1.15.38646]\n[opencl:cpu][opencl:0] Intel(R) OpenCL, AMD Ryzen 9 5900X 12-Core Processor             OpenCL 3.0 (Build 0) [2026.21.3.0.31_160000]\n[opencl:gpu][opencl:1] Intel(R) OpenCL Graphics, Intel(R) Arc(TM) Pro B50 Graphics OpenCL 3.0 NEO  [26.22.38646]\n```\n\nOf course I can just run a single VF and leave the rest to the host, but thats not preferred.",
+        "trust_level": 2,
         "reply_to_post_number": null
       }
     ]
