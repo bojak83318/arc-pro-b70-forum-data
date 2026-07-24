@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-06-10T03:49:13Z",
+  "timestamp": "2026-07-24T02:42:03Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1524,6 +1524,17 @@
         "post_id": 4086533,
         "content_markdown": "I have two b70 pros. Im using them through a proxmox LXC and llama cpp compiled with sycl support. they are working quet well. qwen 3.6 q8 keeps blowing up for some reason but q6-K-XL has been running great in very long 200000 context session with open code. I also have comfy ui running on one using vulkan too. they dont draw too much power and have acceptable performance. though their prompt processing is very slow.",
         "trust_level": 2,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "sleuth",
+        "post_number": 144,
+        "created_at": "2026-07-23T20:10:17.363Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4099502,
+        "content_markdown": "Just got my b70 and wondered if anyone else is experiencing abnormally high levels of coil whine? Mine is audible from 10ft with other PC fans and AC running.",
+        "trust_level": 0,
         "reply_to_post_number": null
       }
     ]
