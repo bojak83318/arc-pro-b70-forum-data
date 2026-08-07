@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-07-30T02:26:02Z",
+  "timestamp": "2026-08-07T02:45:22Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1569,6 +1569,28 @@
         "content_markdown": "sleuth:\n\n> Just got my b70 and wondered if anyone else is experiencing abnormally high levels of coil whine? Mine is audible from 10ft with other PC fans and AC running.\n\nsame it has what i would call a buzzing/coil whine when in use",
         "trust_level": 1,
         "reply_to_post_number": 145
+      },
+      {
+        "username": "manejer",
+        "post_number": 148,
+        "created_at": "2026-08-06T07:36:32.758Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4103720,
+        "content_markdown": "Yeah that sounds about right.",
+        "trust_level": 0,
+        "reply_to_post_number": 147
+      },
+      {
+        "username": "sleuth",
+        "post_number": 149,
+        "created_at": "2026-08-07T00:19:12.365Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4103969,
+        "content_markdown": "Glad to hear it\u2019s normal. Hopefully they get that sorted out in the next one.",
+        "trust_level": 0,
+        "reply_to_post_number": 147
       }
     ]
   }
