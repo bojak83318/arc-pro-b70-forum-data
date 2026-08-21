@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-08-19T01:14:36Z",
+  "timestamp": "2026-08-21T01:17:31Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1624,6 +1624,28 @@
         "content_markdown": "The best Intel llm performance is unlocked with the urakozz github gist - I can\u2019t post links but you can bing that.\n\nwithout mtp\n\n```\n| model       |   test |            t/s |     peak t/s |      ttfr (ms) |   est_ppt (ms) |   e2e_ttft (ms) |\n|:------------|-------:|---------------:|-------------:|---------------:|---------------:|----------------:|\n| Qwen3.8-27B | pp4096 | 2313.29 \u00b1 8.87 |              | 1860.31 \u00b1 6.81 | 1771.10 \u00b1 6.81 |  1860.31 \u00b1 6.81 |\n| Qwen3.8-27B |  tg256 |   30.76 \u00b1 0.01 | 31.67 \u00b1 0.47 |                |                |                 |\n```\n\nand with mtp\n\n```\n| model       |   test |             t/s |     peak t/s |       ttfr (ms) |    est_ppt (ms) |   e2e_ttft (ms) |\n|:------------|-------:|----------------:|-------------:|----------------:|----------------:|----------------:|\n| Qwen3.8-27B | pp4096 | 2148.60 \u00b1 16.39 |              | 2005.37 \u00b1 14.75 | 1906.78 \u00b1 14.75 | 2005.37 \u00b1 14.75 |\n| Qwen3.8-27B |  tg256 |    45.40 \u00b1 1.98 | 55.00 \u00b1 0.82 |                 |                 |                 |\n```\n\nAlso 12k pp/s 100tok/s on qwen 3.6 35b a3b - although that model isn\u2019t as capable as I\u2019d like.\n\n[i1333\u00d7130 6.69 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/0/a/0/0a09763b6659cc5b2cf5d25b89638347bab97292.png \"i\")\n\nI\u2019m more than happy with daily driving 3.8 27b with hermes\n\nIt does take a bit of fiddling. I patched my vllm with some open PR\u2019s to fix prefix caching and something else I\u2019ve forgotten. Currently fumbling my way through enabling kv cache offloading - right now the choice is mtp or cache offload, and mtp wins for me.\n\nIn fact I\u2019m so happy with the b70 that I have a second one arriving this week, to be run on a bifurcated pcie 4.0 slot - either tensor parallelism works or I run 2 independent models\n\nIf there\u2019s any interest I\u2019m happy to go into more detail",
         "trust_level": 1,
         "reply_to_post_number": null
+      },
+      {
+        "username": "Emil_N",
+        "post_number": 153,
+        "created_at": "2026-08-20T20:26:57.021Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4108374,
+        "content_markdown": "What Quant did you use?",
+        "trust_level": 2,
+        "reply_to_post_number": 152
+      },
+      {
+        "username": "wintel",
+        "post_number": 154,
+        "created_at": "2026-08-20T23:47:31.149Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4108430,
+        "content_markdown": "Vishva007/Qwen3.8-27B-W4A16-AutoRound-GPTQ",
+        "trust_level": 1,
+        "reply_to_post_number": 153
       }
     ]
   }
