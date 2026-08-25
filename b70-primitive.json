@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-08-24T01:17:24Z",
+  "timestamp": "2026-08-25T01:15:27Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1668,6 +1668,28 @@
         "content_markdown": "[{A5C90A20-695A-40A2-8A7A-B0C31BB6A550}816\u00d7249 19.3 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/9/9/d/99dc552125cb6bf4d6b115bedf3a48b8d5c15c34.png \"{A5C90A20-695A-40A2-8A7A-B0C31BB6A550}\")\n\nUnless nvtop is wildly inaccurate, I\u2019d say somethings wrong if yours idles at 45 watts. By idling, do you mean keeping the vram loaded with a model?",
         "trust_level": 0,
         "reply_to_post_number": 155
+      },
+      {
+        "username": "GigaBits",
+        "post_number": 157,
+        "created_at": "2026-08-24T19:01:42.841Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4109625,
+        "content_markdown": "Unfortunately they do idle around 45 watts compared to Nvidia 10w or 15w unloaded.\n\nFor anyone trying to virtualize proxmox is stuck in an old kernel 7.0 which can have an impact on performance. I\u2019ve pivoted to IncusOS for virtualization. IncusOS makes it trivial to you stay with the latest kernel (kernel 7.1.9-zabbly+).\n\nI\u2019m curious what kind of hardware everyone\u2019s using Motherboard and CPU choice. Ideally PCI Express 16x gen 4 or 5. For me im on GIGABYTE MC62-G40-00 with AMD Ryzen Threadripper PRO 3945WX 12-Cores.\n\nI\u2019m struggling to get Qwen3.8-27B to run on 2x intel-b70 pros on vLLM. Anyone else have success that outperforms a single card?",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "GigaBits",
+        "post_number": 158,
+        "created_at": "2026-08-24T19:08:37.300Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4109629,
+        "content_markdown": "wintel:\n\n> If there\u2019s any interest I\u2019m happy to go into more detail\n\nPlease do!",
+        "trust_level": 1,
+        "reply_to_post_number": 152
       }
     ]
   }
