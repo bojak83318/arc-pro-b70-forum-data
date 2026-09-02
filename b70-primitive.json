@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-08-26T01:17:58Z",
+  "timestamp": "2026-09-02T03:14:24Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1701,6 +1701,39 @@
         "content_markdown": "Ragnarawk:\n\n> By idling, do you mean keeping the vram loaded with a model?\n\nYes. I see your numbers, so there is hope. I\u2019ll try something different, maybe it\u2019s the mainboards firmware.",
         "trust_level": 1,
         "reply_to_post_number": 156
+      },
+      {
+        "username": "Ragnarawk",
+        "post_number": 160,
+        "created_at": "2026-09-01T21:10:05.720Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4112641,
+        "content_markdown": "I havent yet deployed this, still doing benchmarking/testing and using my other server for my agent. But, I had my agent create a llm-runner program that recieves the API calls from my agent and spins up the appropriate vllm instance, then when it hasnt recieved calls for a while, unloads vram and idles the GPU\u2019s.\n\nDidnt test the 45W thing, but makes sense. Cards cant sleep if they have to constantly refresh the ram. Will see if dealing with potential bugs I made by having my agent build a middleman is worth the $100/year power savings.",
+        "trust_level": 1,
+        "reply_to_post_number": 159
+      },
+      {
+        "username": "tony_gair",
+        "post_number": 161,
+        "created_at": "2026-09-01T21:42:32.441Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4112648,
+        "content_markdown": "I thought they were only usable in 1,2,4,8, etc , you can have three?",
+        "trust_level": 1,
+        "reply_to_post_number": 19
+      },
+      {
+        "username": "wendell",
+        "post_number": 162,
+        "created_at": "2026-09-01T21:54:42.402Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4112650,
+        "content_markdown": "this is correct. except for how llama.cpp scales, not with tensor parallelism. it has more options for scaling than TP",
+        "trust_level": 4,
+        "reply_to_post_number": 161
       }
     ]
   }
