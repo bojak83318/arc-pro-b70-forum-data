@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-10-12T04:40:52Z",
+  "timestamp": "2026-10-25T03:30:50Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1767,6 +1767,28 @@
         "content_markdown": "That is not the case. i look at llama.cpp only being useful if you\u2019re not using a number of GPUs with a power of 2. So if you are trying to spread a model across 3 GPUs llama.cpp is perfect.  \nWith 1/2/4/8 GPUs, vLLM is by far the better option in most cases. The only thing i\u2019m not sure about are the available recipes targeting the b70. It is definitely the case in the cuda space.",
         "trust_level": 1,
         "reply_to_post_number": 163
+      },
+      {
+        "username": "Ragnarawk",
+        "post_number": 166,
+        "created_at": "2026-10-24T22:17:12.293Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4133248,
+        "content_markdown": "I had hermes put together my vllm findings below. I\u2019ve settled on keeping each stream below 134k context so hermes will keep quality higher. 75% compression gives 100k tokens. I could do more, but I like having up to 8 streams going, and because I\u2019m using q4 model and q8 kv, I\u2019m using tokens to counteract that degradation.  \nDont know why, but I\u2019m running pcie 4x8 to each card even though motherboard supports 5.0.\n\nBelow here is AI, ive edited it a bit to shorten to just good parts:::  \n**## vLLM \u2014 Qwen3.8-27B-W4A16-AutoRound-GPTQ (30.8 GiB weights)**\n\nThe current workhorse. One flag block for the TP=2 config, since that\u2019s what I run day-to-day:\n\n```bash\n\nexport ZES\\_ENABLE\\_SYSMAN=1 # required \u2014 vLLM\u2019s XPU memory queries return free=0 without it\n\nvllm serve /path/to/Qwen3.8-27B-W4A16-AutoRound-GPTQ \\\n\n\u2013tensor-parallel-size 2 \\\n\n\u2013gpu-memory-utilization 0.9 \\\n\n\u2013max-num-batched-tokens 1024 \\\n\n\u2013kv-cache-dtype fp8\\_e4m3 \\\n\n\u2013max-model-len 134000 \\\n\n\u2013max-num-seqs 8 \\\n\n\u2013num-gpu-blocks-override 786 \\\n\n\u2013tool-call-parser qwen3\\_xml \\\n\n\u2013reasoning-parser qwen3 \\\n\n\u2013chat-template /path/to/chat\\_template.jinja\n\n# enforce\\_eager left OFF \u2014 cudagraphs ON, +72% decode over eager\n\n```\n\nWhat that buys (measured, verified in the boot log):\n\n- **\\*\\*KV pool: 1,170,266 tokens\\*\\*** (786 blocks free per card, ~760 tokens/block). That is 8.7\u00d7 the full 134k context concurrently, 11.2\u00d7 at 100k, 17\u00d7 at 68k.\n\n**\\*\\*TP=1 (one B70)\\*\\*** \u2014 for anyone who wants to leave a card free:\n\n- Dense 27B W4A16, TP=1, auto GMU 0.9: **\\*\\*227,800 tokens\\*\\*** of KV (~1.7 full-context streams).\n\n- MoE Qwen3.6-35B-A3B-int4-mixed: TP=1 with blocks=500 \u2192 **\\*\\*516,031 tokens\\*\\*** (fp16 KV, ~30 GiB); the same model TP=2 at GMU 0.98 \u2192 **\\*\\*1,703,405 tokens\\*\\***. If you\u2019re running a 3B-active MoE, TP=2 is not optional for context headroom.\n\n- KV head asymmetry (dense 32/8 vs MoE 8/8) means TP=2 KV halving works cleanly for both.\n\n**\\*\\*Three gotchas that cost me the most time:\\*\\***\n\n1. `\u2013num-gpu-blocks-override` is **\\*\\*per GPU\\*\\***. At TP=2 you pass the single-card value and vLLM multiplies it across workers. Auto-sizing the KV pool instead OOMs during allocation, so pin it.\n\n2. vLLM 0.29\u2019s XPU `getMemoryInfo()` reports free=0 (upstream PR #53990 is open). I run a monkeypatch that falls back to sysinfo total \u2212 process RSS. If your vLLM refuses to boot with \u201cnot enough memory\u201d, that\u2019s why.\n\n3. **\\*\\*Never over-provision KV on TP=1.\\*\\*** Oversizing `\u2013num-gpu-blocks-override` on a single card is a real XPU driver bug: the GPU goes down (error 20, DEVICE\\_LOST) and the other one recovers. It\u2019s not a config error you can absorb.",
+        "trust_level": 1,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "Sudo_Apt",
+        "post_number": 167,
+        "created_at": "2026-10-24T23:09:07.421Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4133272,
+        "content_markdown": "This is incredibly similar to my set up with two B70\u2019s and a RTX 2000 hosting Helper models. I wanna say it\u2019s Aries vLLM and Qwen 3.8-27b\\_q\\_8.",
+        "trust_level": 2,
+        "reply_to_post_number": 166
       }
     ]
   }
