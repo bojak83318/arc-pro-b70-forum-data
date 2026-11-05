@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-11-02T04:46:24Z",
+  "timestamp": "2026-11-05T05:28:18Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1811,6 +1811,50 @@
         "content_markdown": "@\\*\\*[Ben\\_Murzynski](https://forum.level1techs.com/u/ben_murzynski)  \n\\*\\*  \nOne of the best things I had my agent do, is I pointed it at pewdiepie\u2019s odysseus and told it to grab what it can learn from deep-research and import it into my system as a skill. Now, I run all of my audits from that (adding in ponytail, and now reverse-engineer-anything skills).\n\nPoint is, have your agent look at Nvidias NeMo Switchyard. May be what your looking for in deciding what goes local vs cloud (maybe only after local fails in X tries) for each query/task.\n\nI am running my stuff 100% local, zero telemetry or cloud, ect, so went the Litellm route with customized routing logic instead of a switchyard style.",
         "trust_level": 2,
         "reply_to_post_number": 168
+      },
+      {
+        "username": "Ben_Murzynski",
+        "post_number": 170,
+        "created_at": "2026-11-04T12:54:15.683Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4137114,
+        "content_markdown": "[@Ragnarawk](/u/ragnarawk) Thanks for the tip. I had Claude look up Switchyard. Local first and cloud only when local strikes out is how I want this box to work, so it goes on my list once testing wraps up. Same for Odysseus.\n\nSince my last post: same C model (orcarouter Q8\\_0), same two B70s, still Windows 11 + WSL2.\n\n* Output speed went from 43 tok/s to 82 to 94 on short prompts, and it still holds 68 to 72 at 64K of context. Those come from our own test script, not llama-benchy, so it\u2019s close but not apples to apples. The 94 build (tensor split) is now my live server.\n* We turned on context checkpoints. In a 10-turn chat the wait before each reply dropped from about 45 seconds to about 7.\n* HumanEval+ with thinking on: 155/164 on the Q8. The Qwen3.6-35B MoE scored 157/164 at 81 tok/s.\n* One card: Q6\\_K now runs 89.5 tok/s on a single B70 with a full 64K window, and scores 156/164 on HumanEval+.\n\nThe goal is CUDA-level speed on the Q8 with thinking on, on Windows. 64 GB of RAM is on the way so I can try the Qwen3.8 Flash Next MoE.",
+        "trust_level": 0,
+        "reply_to_post_number": 169
+      },
+      {
+        "username": "Ben_Murzynski",
+        "post_number": 171,
+        "created_at": "2026-11-04T13:31:16.955Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4137124,
+        "content_markdown": "(post deleted by author)",
+        "trust_level": 0,
+        "reply_to_post_number": null
+      },
+      {
+        "username": "Sudo_Apt",
+        "post_number": 172,
+        "created_at": "2026-11-04T14:51:30.890Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4137141,
+        "content_markdown": "Very, very cool. I\u2019m in a very similar boat, running two b70s on a Gigabyte Z890 AEROG that i bought for the x8/x8 bifurcation but I\u2019m using Ubuntu Linux which makes a lot of things easier. Your results are great! I\u2019ll be watching closely as Intel has ramped up the support teams for the pro cards in the past couple months, I hope and expect that leads to better performance",
+        "trust_level": 2,
+        "reply_to_post_number": 168
+      },
+      {
+        "username": "Ben_Murzynski",
+        "post_number": 173,
+        "created_at": "2026-11-04T16:29:56.752Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4137165,
+        "content_markdown": "[@Sudo\\_Apt](/u/sudo_apt) Thanks. Similar setup here: ASUS ProArt B850-Creator, both B70s on CPU lanes at Gen5 x8. We measured it, and x8 itself isn\u2019t the bottleneck: each card moves about 28 GB/s to the host and about 55 GB/s with both going. Where the x8/x8 split earns its keep is the second card: without it, that card would sit on a chipset x4 slot, and in tensor split the slower link sets the pace for both cards. The tensor-split gains came from changing how the engine hands work between the cards. We\u2019re still testing other configurations and engines, and native Linux is on my list too. Good to hear Intel is adding support people for the Pro cards.",
+        "trust_level": 0,
+        "reply_to_post_number": 172
       }
     ]
   }
