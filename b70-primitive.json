@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-11-15T05:09:08Z",
+  "timestamp": "2026-11-17T06:52:52Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1866,6 +1866,28 @@
         "content_markdown": "Ran some power benchmarking, if this helps anyone. I am going to set my cards to 180watts.  \nI tried tuning fan curves but Hermes cant figure it out. So Ill wait another month or two to do that and undervolt tune.\n\nThese were ran with 50k pp and 5k tg.\n\n[image2000\u00d71120 147 KB](https://level1techs.us-east-1.linodeobjects.com/original/4X/4/c/c/4cca1f49daaea0f9639a71de090d89c2076e92fc.png \"image\")",
         "trust_level": 2,
         "reply_to_post_number": null
+      },
+      {
+        "username": "Ben_Murzynski",
+        "post_number": 175,
+        "created_at": "2026-11-16T05:10:52.061Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4141471,
+        "content_markdown": "[@Ragnarawk](/u/ragnarawk) Update since #174, Nov 15:\n\nHere\u2019s why I\u2019m doing this. A lot of cloud AI is priced well below what it costs to run. A plan might be $100 a month, while heavy use can cost the provider $1,000 or more. Someone is covering that gap, and I don\u2019t think it lasts. When it ends, prices could jump, limits could tighten, or a provider could change terms or go away. I run businesses that use AI every day, so I wanted something that keeps working if that happens. I also doubt local models will stay cheap next to Chinese models like DeepSeek, which can run at a fraction of the cost. If that pressure keeps building, I wouldn\u2019t be shocked if the U.S. government eventually limits Chinese model use, and that could hit me too. I could be wrong about timing, but I\u2019d rather have a fallback than get caught without one. So the plan is local first, with cloud as the backup.\n\n**Setup:** Same orcarouter Q8 with thinking on, both cards, tensor split, on a patched llama.cpp SYCL build. RAM is now G.SKILL Flare X Series 64GB (2 x 32GB) F5-6000. On cooling, I shortened the fan curves in the BIOS and modified the CPU cooling pump. I didn\u2019t set any wattage limits on the cards. When I\u2019m running my agents I never push them hard enough for it to matter, so I didn\u2019t see the need.\n\n**Q8 results:**\n\n* Real chat averages about 67 tok/s on my tests. My best short-prompt run was 94.\n* HumanEval+: 155/164 with thinking on, 146/164 with thinking and speculation both off.\n* 6 of 6 shop jobs pass with thinking on.\n* Refusal keyword test: 0 of 100 harmful prompts answered as refusals, and 0 of 100 harmless prompts flagged as refusals.\n\n**Temperature monitoring:** I set up a Windows logon task that reads both GPUs and the CPU every few seconds and writes the readings to a file. A guard on the Linux side reads that file and stops the model if a GPU hits 176 \u00b0F, the CPU holds at 194 \u00b0F for 10 seconds, host RAM drops below 1,536 MiB, or the readings go more than 5 seconds stale. The sensor readings dropped out after about 74 seconds during testing, so the script now renews them every 30 seconds. Every test runs under that guard. In the runs I\u2019ve documented, the GPUs stayed under 176 \u00b0F. I did get a few overloads from the models I was testing: one CPU trip at about 196 \u00b0F, and some runs stopped on host RAM.\n\nMatched 8-bit concurrency and DFlash comparison are next. I\u2019ll post those here.",
+        "trust_level": 1,
+        "reply_to_post_number": 174
+      },
+      {
+        "username": "Riza_Guntur_Prakoso",
+        "post_number": 176,
+        "created_at": "2026-11-16T11:28:39.231Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4141535,
+        "content_markdown": "If you want to try lower quants like IQ4\\_XS or ISTA DASLAB IQ3\\_S version, you can try my inferzero on GitHub: rizagp/inferzero\n\nShould run a lot faster than Q8, and hugely more responsive",
+        "trust_level": 1,
+        "reply_to_post_number": 175
       }
     ]
   }
