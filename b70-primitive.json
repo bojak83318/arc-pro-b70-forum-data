@@ -1,7 +1,7 @@
 {
   "primitive_id": "arc-pro-b70-forum-mapper",
   "version": "1.3.0",
-  "timestamp": "2026-11-18T06:12:42Z",
+  "timestamp": "2026-11-26T07:07:14Z",
   "source": "https://forum.level1techs.com/t/247873",
   "data": {
     "domain": "forum.level1techs.com",
@@ -1899,6 +1899,17 @@
         "content_markdown": "I\u2019ll check it out!",
         "trust_level": 1,
         "reply_to_post_number": 176
+      },
+      {
+        "username": "Ragnarawk",
+        "post_number": 178,
+        "created_at": "2026-11-26T03:30:38.133Z",
+        "board": "Level1Techs Discussion",
+        "topic": "Intel B70 Launch - Unboxed and Tested",
+        "post_id": 4144700,
+        "content_markdown": "Changed vllm version, don\u2019t think I previously had MTP working.  \nNow im getting 56 tok/s for tg on 1 stream and ~341 tok/s with 8. Vs 29/220.  \nHuge improvement. Still not what im getting with R9700\u2019s on radiance, but the gap closed big time.\n\nAI summary below:  \n**Update (Nov 26): vLLM 0.29 \u2192 0.34 on the B70s \u2014 2.0\u00d7 single-stream, 1.55\u00d7 at 8 wide**\n\nSame model, same flag block, same 786 pin. The only change that matters is the vLLM version (0.29.0 from 2026-09-09 \u2192 0.34.0 from 2026-11-16). Qwen3.8-27B-W4A16-AutoRound-GPTQ, TP=2 on 2\u00d7 B70, fp8 KV, 134k \u00d7 8 streams, 1024 batch, GMU 0.9, cudagraphs ON.\n\nMeasured (4\u00d7 on 0.29, 2\u00d7 on 0.34, all within ~1% of mean):\n\n* **0.29 plain:** 28.9 tok/s single-stream (28.5\u201329.1 range), 220.3 at 8 wide (219.2\u2013222.0)\n* **0.34 plain:** 56.2 single (56.08\u201356.42), 341.4 at 8 wide (340.87 / 341.91)\n* **0.29 + MTP3:** 55.8 single, 353.9 at 8 wide \u2014 but not production-ready: 1/3 soaks, 3 worker deaths across 3 distinct mechanisms, 4 GPU HW events + 1 software crash (first spec-decode batch killed the worker). 0.34 + MTP3 doesn\u2019t boot at all (3/3: oneCCL graph build, torch-xpu-ops assertion, XCCL init hang). MTP stays shelved on both.\n\nSo: single stream 2.0\u00d7, 8-wide 1.55\u00d7, and 0.29+MTP3 is only ~4% above 0.34 plain at 8-wide with none of the stability, so 0.34 plain is the ship config.",
+        "trust_level": 2,
+        "reply_to_post_number": null
       }
     ]
   }
